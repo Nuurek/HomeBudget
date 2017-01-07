@@ -9,6 +9,9 @@ class KategorieZakupu(models.Model):
         managed = False
         db_table = 'kategorie_zakupu'
 
+    def __str__(self):
+        return self.nazwa
+
 
 class Paragony(models.Model):
     czas_zakupu = models.DateField()
@@ -19,6 +22,9 @@ class Paragony(models.Model):
         managed = False
         db_table = 'paragony'
 
+    def __str__(self):
+        return self.czas_zakupu.strftime("%d/%m/%Y") + ' - ' + str(self.sklepy_adres)
+
 
 class SieciSklepow(models.Model):
     nazwa = models.CharField(primary_key=True, max_length=30)
@@ -26,6 +32,9 @@ class SieciSklepow(models.Model):
     class Meta:
         managed = False
         db_table = 'sieci_sklepow'
+
+    def __str__(self):
+        return self.nazwa
 
 
 class Sklepy(models.Model):
@@ -35,6 +44,9 @@ class Sklepy(models.Model):
     class Meta:
         managed = False
         db_table = 'sklepy'
+
+    def __str__(self):
+        return str(self.sieci_sklepow_nazwa) + ', ' + self.adres
 
 
 class Zakupy(models.Model):
@@ -48,3 +60,6 @@ class Zakupy(models.Model):
     class Meta:
         managed = False
         db_table = 'zakupy'
+
+    def __str__(self):
+        return self.nazwa_produktu + ' ' + str(self.ilosc_produktu * float(self.cena_jednostkowa)) + 'zł'
