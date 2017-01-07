@@ -1,0 +1,10 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .row-offset {
+        margin: 2px 0;
+    }
+}
