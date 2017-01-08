@@ -12,7 +12,7 @@
   </head>
   <body>
       {% block top-nav-wrapper %}
-      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-inverse" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -37,7 +37,10 @@
                 </ul>
             </div>
         </div>
-        {% endblock %}
-        {% block content %}{% endblock %}
+    </div>
+    {% endblock %}
+    {% block content %}{% endblock %}
+        <script src="{% static 'js/jquery-3.1.1.js' %}"></script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>

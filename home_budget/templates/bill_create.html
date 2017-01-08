@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <form class="form-contact" role="form" method="post">{% csrf_token %}
+            <h1>Dodaj paragon</h1>
+            <div class="form-group">
+                <label for="id_brand">Sieć sklepów</label>
+                <select id="id_brand" name="brand" class="form-control" required>
+                    <option value="">----------</option>
+                    {% for brand in brands %}
+                        <option>{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_shop_address">Sklep</label>
+                <select id="id_shop_address" name="shop_address" class="form-control" required disabled>
+                    <option value="">----------</option>
+                    <script type="text/javascript">
+                        var shops = JSON.parse('{{ shops | escapejs }}');
+                    </script>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Dodaj</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'home_budget/js/bill_create.js' %}"></script>
+{% endblock %}

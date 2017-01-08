@@ -23,7 +23,7 @@ class Paragony(models.Model):
         db_table = 'paragony'
 
     def __str__(self):
-        return self.czas_zakupu.strftime("%d/%m/%Y") + ' - ' + str(self.sklepy_adres)
+        return self.czas_zakupu + ' - ' + str(self.sklepy_adres)
 
 
 class SieciSklepow(models.Model):
