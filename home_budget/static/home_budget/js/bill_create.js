@@ -12,7 +12,7 @@
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
     var shopSelect = $('#id_shop_address')[0];
-    var disabledInputs = $(createBillForm).find('select, input').slice(2);
+    var disabledInputs = $(createBillForm).find('select, input, button').slice(2);
 
     var onBrandSelectChange = function() {
         var brand = brandSelect.value;

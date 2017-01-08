@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import Paragony, SieciSklepow, Sklepy
+from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu
 from django.db.models.functions import Lower
 import json
 
@@ -11,8 +11,17 @@ class BillCreateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BillCreateView, self).get_context_data(**kwargs)
-        brands = SieciSklepow.objects.all().order_by(Lower('nazwa'))
-        context['brands'] = brands
+
+        context['brands'] = self.get_brands()
+        context['shops'] = self.get_shops()
+        context['categories'] = self.get_categories()
+
+        return context
+
+    def get_brands(self):
+        return SieciSklepow.objects.all().order_by(Lower('nazwa'))
+
+    def get_shops(self):
         shops = Sklepy.objects.all().order_by(Lower('adres'))
         brands_shops = {}
         for shop in shops:
@@ -21,5 +30,8 @@ class BillCreateView(TemplateView):
                 brands_shops[brand] = []
 
             brands_shops[brand].append(shop.adres)
-        context['shops'] = json.dumps(brands_shops)
-        return context
+
+        return json.dumps(brands_shops)
+
+    def get_categories(self):
+        return KategorieZakupu.objects.all().order_by(Lower('nazwa'))

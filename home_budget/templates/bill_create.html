@@ -11,36 +11,72 @@
 <div class="container">
     <div class="row">
         <form id="create-bill-form" class="form-contact" role="form" method="post">{% csrf_token %}
-            <h1>Dodaj paragon</h1>
-            <div class="form-group text-center">
-                <label for="id_brand">Sieć sklepów</label>
-                <select id="id_brand" name="brand" class="form-control" required>
-                    <option value="">----------</option>
-                    {% for brand in brands %}
-                        <option>{{ brand }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group text-center">
-                <label for="id_shop_address">Sklep</label>
-                <select id="id_shop_address" name="shop_address" class="form-control" required disabled>
-                    <option value="">----------</option>
-                    <script type="text/javascript">
-                        var shops = JSON.parse('{{ shops | escapejs }}');
-                    </script>
-                </select>
-            </div>
-            <div class="form-group text-center">
-                <label for="id_shop_address">Data zakupu</label>
-                <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
-                    <input type="text" class="form-control" disabled>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-th"></span>
+            <h1 class="text-center">Dodaj paragon</h1>
+            <div id="bill-details-form" class="form-group">
+                <div class="form-group text-center">
+                    <label for="id_brand">Sieć sklepów</label>
+                    <select id="id_brand" name="brand" class="form-control" required>
+                        <option value="">----------</option>
+                        {% for brand in brands %}
+                            <option>{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group text-center">
+                    <label for="id_shop_address">Sklep</label>
+                    <select id="id_shop_address" name="shop_address" class="form-control" required disabled>
+                        <option value="">----------</option>
+                        <script type="text/javascript">
+                            var shops = JSON.parse('{{ shops | escapejs }}');
+                        </script>
+                    </select>
+                </div>
+                <div class="form-group text-center">
+                    <label for="id_shop_address">Data zakupu</label>
+                    <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
+                        <input type="text" class="form-control" disabled>
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="form-group text-center">
+                <div class="row">
+                    <div class="col-md-7 form-group">
+                        <label for="name">Nazwa</label>
+                        <input class="form-control" id="textbox1" type="text" disabled/>
+
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label for="category">Kategoria</label>
+                        <select id="id_brand" name="brand" class="form-control" required disabled>
+                            <option value="">----------</option>
+                            {% for category in categories %}
+                                <option>{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 form-group">
+                        <label for="price">Cena</label>
+                        <input class="form-control" id="textbox2" type="text" disabled/>
+                    </div>
+                    <div class="col-md-1 form-group">
+                        <label for="amount">Ilość</label>
+                        <input class="form-control" id="textbox2" type="text" placeholder="1" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-info" disabled>
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
             <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Dodaj</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" disabled>
+                    Dodaj
+                </button>
             </div>
         </form>
     </div>
