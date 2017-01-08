@@ -12,7 +12,25 @@
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
     var shopSelect = $('#id_shop_address')[0];
+    var billRecords = $('#bill-records-rows');
+
+    var recordToClone = $(billRecords[0]).clone();
+    $(recordToClone).find('select, input').prop('disabled', '');
+
+    var addRecordButton = $('#add-bill-record');
     var disabledInputs = $(createBillForm).find('select, input, button').slice(2);
+
+    var checkForErrorAndDisable = function() {
+        var brand = brandSelect.value;
+        var brandShops = shops[brand];
+
+        if(brandShops != undefined) {
+            $(disabledInputs).prop('disabled', '');
+        } else {
+            shopSelect.append(new Option("BRAK SKLEPU!", ""));
+            $(disabledInputs).prop('disabled', 'disabled');
+        }
+    }
 
     var onBrandSelectChange = function() {
         var brand = brandSelect.value;
@@ -22,13 +40,16 @@
         $.each(brandShops, function(index, shop){
             shopSelect.append(new Option(shop, shop));
         });
-        if(brandShops != undefined) {
-            $(disabledInputs).prop('disabled', '');
-        } else {
-            shopSelect.append(new Option("BRAK SKLEPU!", ""));
-            $(disabledInputs).prop('disabled', 'disabled');
-        }
+
+        checkForErrorAndDisable();
+    }
+
+    var addBillRecord = function() {
+        billRecords.append(recordToClone.clone());
     }
 
     $(brandSelect).change(onBrandSelectChange);
+    $(addRecordButton).click(addBillRecord);
+
+    checkForErrorAndDisable();
 })(jQuery);
