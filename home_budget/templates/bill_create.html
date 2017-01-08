@@ -2,12 +2,17 @@
 
 {% load static %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "home_budget/css/bill_create.css" %}">
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
-        <form class="form-contact" role="form" method="post">{% csrf_token %}
+        <form id="create-bill-form" class="form-contact" role="form" method="post">{% csrf_token %}
             <h1>Dodaj paragon</h1>
-            <div class="form-group">
+            <div class="form-group text-center">
                 <label for="id_brand">Sieć sklepów</label>
                 <select id="id_brand" name="brand" class="form-control" required>
                     <option value="">----------</option>
@@ -16,7 +21,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group text-center">
                 <label for="id_shop_address">Sklep</label>
                 <select id="id_shop_address" name="shop_address" class="form-control" required disabled>
                     <option value="">----------</option>
@@ -24,6 +29,15 @@
                         var shops = JSON.parse('{{ shops | escapejs }}');
                     </script>
                 </select>
+            </div>
+            <div class="form-group text-center">
+                <label for="id_shop_address">Data zakupu</label>
+                <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
+                    <input type="text" class="form-control" disabled>
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Dodaj</button>
@@ -34,5 +48,6 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'home_budget/js/bill_create.js' %}"></script>
 {% endblock %}

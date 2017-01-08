@@ -1,0 +1,10 @@
+#create-bill-form {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+#bill-date {
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+}
