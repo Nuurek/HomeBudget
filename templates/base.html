@@ -2,46 +2,55 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>{% block title %}Budżet domowy{% endblock %}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
-    {% block stylesheets %}{% endblock %}
-  </head>
-  <body>
-      {% block top-nav-wrapper %}
-      <div class="navbar navbar-inverse" role="navigation">
+    <link rel="stylesheet" href="{% static "css/style.css" %}"> {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    {% block top-nav-wrapper %}
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div id="modalMessage" class="alert alert-info fade in text-center">
+                <strong></strong>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-inverse" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
                 <a class="navbar-brand" href="/">Budżet domowy</a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li >
+                    <li>
                         <a href="/">Zakupy</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="">Sklepy</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="">Statystyki</a>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block content %}{% endblock %}
-        <script src="{% static 'js/jquery-3.1.1.js' %}"></script>
+    {% endblock %} {% block content %}{% endblock %}
+    <script src="{% static 'js/jquery-3.1.1.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     {% block scripts %}{% endblock %}
-  </body>
+</body>
+
 </html>

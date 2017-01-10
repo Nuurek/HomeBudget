@@ -44,7 +44,7 @@
 
             <div id="bill-records" class="form-group text-center">
                 <div id="record-labels" class="row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-5 form-group">
                         <label for="name">Nazwa</label>
                     </div>
                     <div class="col-md-3 form-group">
@@ -60,7 +60,7 @@
 
                 <div id="bill-records-rows">
                     <div class="row">
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-5 form-group">
                             <input class="form-control" id="name0" name="name" type="text" disabled/>
                         </div>
                         <div class="col-md-3 form-group">
@@ -76,6 +76,11 @@
                         </div>
                         <div class="col-md-1 form-group">
                             <input class="form-control text-center" id="amount0" name="amount" type="number" min="1" step="any" value="1" disabled/>
+                        </div>
+                        <div class="col-md-1 form-group">
+                            <button type="button" class="btn btn-warning remove-bill-record">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -98,5 +103,6 @@
 
 {% block scripts %}
     <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'home_budget/js/bill_create.js' %}"></script>
 {% endblock %}

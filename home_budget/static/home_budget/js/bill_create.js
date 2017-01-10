@@ -1,4 +1,4 @@
-(function($){
+function setUpDatePicker() {
     $('#bill-date').datepicker({
         format: "dd/mm/yyyy",
         weekStart: 1,
@@ -8,13 +8,15 @@
         todayHighlight: true
     });
     $('#bill-date').datepicker('update', new Date());
+}
 
+function setUpElements() {
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
     var shopSelect = $('#id_shop_address')[0];
     var billRecords = $('#bill-records-rows');
 
-    var recordToClone = $(billRecords[0]).clone();
+    var recordToClone = $(billRecords.children()[0]).clone();
     $(recordToClone).find('select, input').prop('disabled', '');
 
     var addRecordButton = $('#add-bill-record');
@@ -48,8 +50,23 @@
         billRecords.append(recordToClone.clone());
     }
 
+    var removeBillRecord = function() {
+        var numberOfRows = $(billRecords).children().length;
+        if (numberOfRows > 1) {
+            $(this).parent().parent().remove();
+        } else {
+            showErrorMessage("Paragon musi zawierać co najmniej jedną pozycję.");
+        }
+    }
+
     $(brandSelect).change(onBrandSelectChange);
     $(addRecordButton).click(addBillRecord);
+    $(billRecords).on('click', '.remove-bill-record', removeBillRecord);
 
     checkForErrorAndDisable();
+}
+
+(function($){
+    setUpDatePicker();
+    setUpElements();
 })(jQuery);
