@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu
+from django.views.generic import TemplateView, FormView, CreateView
+from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
+from .forms import PurchaseForm, BillForm
 from django.db.models.functions import Lower
+from django.forms import modelformset_factory, inlineformset_factory
+from django.http import HttpResponseRedirect
 import json
 
 
@@ -35,3 +38,34 @@ class BillCreateView(TemplateView):
 
     def get_categories(self):
         return KategorieZakupu.objects.all().order_by(Lower('nazwa'))
+
+
+class BillFormView(TemplateView):
+
+    template_name = "paragony_form.html"
+
+    def get(self, request, *args, **kwargs):
+        "GET forms ready!"
+        bill_form = BillForm()
+        PurchaseFormSet = inlineformset_factory(Paragony, Zakupy, exclude=('id',),
+                            extra=1)
+
+        formset = PurchaseFormSet()
+        context = {'form': bill_form, 'formset': formset}
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        "Handle form submission on POST request"
+        bill_form = BillForm(data=request.POST)
+        PurchaseFormSet = inlineformset_factory(Paragony, Zakupy, exclude=('id',))
+        formset = PurchaseFormSet(data=request.POST)
+        if bill_form.is_valid() and formset.is_valid():
+            bill = bill_form.save()
+            purchases = formset.save(commit=False)
+            for purchase in purchases:
+                purchase.paragony = bill
+                purchase.save()
+            # TODO use reverse('name_of_the_view_to_redirect_to') instead of '/'
+            return HttpResponseRedirect('/form')
+        context = {'form': bill_form, 'formset': formset}
+        return self.render_to_response(context)

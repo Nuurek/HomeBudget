@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    {{ formset }}
+    <input type="submit" value="Dodaj paragon" />
+</form>
+
+{% endblock %}

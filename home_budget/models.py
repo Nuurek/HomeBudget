@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class KategorieZakupu(models.Model):
     nazwa = models.CharField(primary_key=True, max_length=30)
     czy_opcjonalny = models.BooleanField()
@@ -16,15 +15,14 @@ class KategorieZakupu(models.Model):
 class Paragony(models.Model):
     czas_zakupu = models.DateField()
     sklepy_adres = models.ForeignKey('Sklepy', models.DO_NOTHING, db_column='sklepy_adres')
-    id = models.FloatField(primary_key=True)
+    # id = models.FloatField(primary_key=True)
 
     class Meta:
         managed = False
         db_table = 'paragony'
 
     def __str__(self):
-        return self.czas_zakupu + ' - ' + str(self.sklepy_adres)
-
+        return self.czas_zakupu.strftime("%d-%m-%Y") + ' - ' + str(self.sklepy_adres)
 
 class SieciSklepow(models.Model):
     nazwa = models.CharField(primary_key=True, max_length=30)
@@ -50,7 +48,7 @@ class Sklepy(models.Model):
 
 
 class Zakupy(models.Model):
-    id = models.FloatField(primary_key=True)
+    # id = models.FloatField(primary_key=True)
     nazwa_produktu = models.CharField(max_length=30)
     cena_jednostkowa = models.FloatField()
     ilosc_produktu = models.FloatField()
