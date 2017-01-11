@@ -82,61 +82,10 @@
                     </button>
                 </div>
             </div>
-            <div id="bill-records" class="form-group text-center">
-                <div id="record-labels" class="row">
-                    <div class="col-md-5 form-group">
-                        <label for="name">Nazwa</label>
-                    </div>
-                    <div class="col-md-3 form-group">
-                        <label for="category">Kategoria</label>
-                    </div>
-                    <div class="col-md-2 form-group">
-                        <label for="price">Cena</label>
-                    </div>
-                    <div class="col-md-1 form-group">
-                        <label for="amount">Ilość</label>
-                    </div>
-                </div>
-
-                <div id="bill-records-rows">
-                    <div class="row">
-                        <div class="col-md-5 form-group">
-                            <input class="form-control" id="name0" name="name" type="text" disabled/>
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <select id="category0" name="category" class="form-control" required disabled>
-                                <option value="">----------</option>
-                                {% for category in categories %}
-                                    <option>{{ category }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-2 form-group">
-                            <input class="form-control text-center" id="price0" name="price" type="number" min="0.00" step="0.01" value="0.99" disabled/>
-                        </div>
-                        <div class="col-md-1 form-group">
-                            <input class="form-control text-center" id="amount0" name="amount" type="number" min="1" step="any" value="1" disabled/>
-                        </div>
-                        <div class="col-md-1 form-group">
-                            <button type="button" class="btn btn-warning remove-bill-record">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button id="add-bill-record" type="button" class="btn btn-info" disabled>
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                </div>
-            </div>
             <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block" type="submit" disabled>
-                    Dodaj
-                </button>
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Dodaj" disabled>
+                </input>
             </div>
-        </form>
     </div>
 </div>
 {% endblock %}

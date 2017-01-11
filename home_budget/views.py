@@ -7,7 +7,7 @@ import json
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import PurchaseForm, BillForm, ShopForm
-
+from .widgets import get_purchase_widgets, get_purchase_labels
 
 class BillCreateView(TemplateView):
 
@@ -49,7 +49,10 @@ class BillFormView(TemplateView):
         bill_form = BillForm()
 
         PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
-            exclude=(), extra=1, can_delete=False, )
+            exclude=(), extra=1, can_delete=False,
+            widgets=get_purchase_widgets(),
+            labels=get_purchase_labels(),
+        )
         purchase_formset = PurchaseFormSet()
 
         context = {
@@ -61,10 +64,14 @@ class BillFormView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         bill_form = BillForm(data=request.POST)
-        print(bill_form)
+        
         PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
-            exclude=('id',), can_delete=False)
+            exclude=(), can_delete=False,
+            widgets=get_purchase_widgets(),
+            labels=get_purchase_labels(),
+        )
         formset = PurchaseFormSet(data=request.POST)
+
         if bill_form.is_valid() and formset.is_valid():
             bill = bill_form.save()
             purchases = formset.save(commit=False)
@@ -72,5 +79,10 @@ class BillFormView(TemplateView):
                 purchase.paragony = bill
                 purchase.save()
             return HttpResponseRedirect(reverse('bill_create'))
-        context = {'form': bill_form, 'formset': formset}
+
+        context = {
+            'form': bill_form,
+            'formset': formset
+
+        }
         return self.render_to_response(context)

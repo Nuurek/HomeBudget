@@ -10,6 +10,10 @@ class PurchaseForm(ModelForm):
 
 class BillForm(ModelForm):
 
+    class Meta:
+        model = Paragony
+        exclude = ('brand',)
+
     brand = ModelChoiceField(queryset=SieciSklepow.objects.all(),
         label="Sieć sklepów",
         label_suffix='',
@@ -33,10 +37,6 @@ class BillForm(ModelForm):
             'class': 'form-control',
         })
     )
-
-    class Meta:
-        model = Paragony
-        exclude = ('brand',)
 
 
 class ShopForm(ModelForm):
