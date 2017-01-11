@@ -13,8 +13,9 @@ function setUpDatePicker() {
 function setUpElements() {
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
-    var shopSelect = $('#id_shop_address')[0];
+    var shopSelect = $('#id_sklepy_adres')[0];
     var billRecords = $('#bill-records-rows');
+    billRecords.find('select, input').prop('required', 'required');
 
     var recordToClone = $(billRecords.children()[0]).clone();
     $(recordToClone).find('select, input').prop('disabled', '');
@@ -27,10 +28,10 @@ function setUpElements() {
         var brandShops = shops[brand];
 
         if(brandShops != undefined) {
-            $(disabledInputs).prop('disabled', '');
+            $(createBillForm).find('select, input, button').slice(2).prop('disabled', '');
         } else {
             shopSelect.append(new Option("BRAK SKLEPU!", ""));
-            $(disabledInputs).prop('disabled', 'disabled');
+            $(createBillForm).find('select, input, button').slice(2).prop('disabled', 'disabled');
         }
     }
 

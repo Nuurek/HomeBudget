@@ -4,6 +4,7 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import json
+from collections import defaultdict
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import PurchaseForm, BillForm, ShopForm
@@ -45,6 +46,16 @@ class BillFormView(TemplateView):
 
     template_name = "bill_create.html"
 
+    def get_shops(self):
+        shops = Sklepy.objects.all().values('sieci_sklepow_nazwa', 'adres').order_by('sieci_sklepow_nazwa', 'adres')
+
+        brands_shops = defaultdict(list)
+        for shop in shops:
+            brand = shop['sieci_sklepow_nazwa']
+            brands_shops[brand].append(shop['adres'])
+
+        return json.dumps(brands_shops)
+
     def get(self, request, *args, **kwargs):
         bill_form = BillForm()
 
@@ -53,18 +64,20 @@ class BillFormView(TemplateView):
             widgets=get_purchase_widgets(),
             labels=get_purchase_labels(),
         )
+
         purchase_formset = PurchaseFormSet()
 
         context = {
             'form': bill_form,
             'purchase_formset': purchase_formset,
+            'shops': self.get_shops(),
         }
 
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         bill_form = BillForm(data=request.POST)
-        
+
         PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
             exclude=(), can_delete=False,
             widgets=get_purchase_widgets(),
@@ -82,7 +95,7 @@ class BillFormView(TemplateView):
 
         context = {
             'form': bill_form,
-            'formset': formset
-
+            'formset': formset,
+            'shops': self.get_shops(),
         }
         return self.render_to_response(context)
