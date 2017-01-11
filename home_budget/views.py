@@ -43,13 +43,13 @@ class BillCreateView(TemplateView):
 
 class BillFormView(TemplateView):
 
-    template_name = "paragony_form.html"
+    template_name = "bill_create.html"
 
     def get(self, request, *args, **kwargs):
         bill_form = BillForm()
 
         PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
-            exclude=(), extra=1, can_delete=False)
+            exclude=(), extra=1, can_delete=False, )
         purchase_formset = PurchaseFormSet()
 
         context = {

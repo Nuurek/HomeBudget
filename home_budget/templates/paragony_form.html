@@ -5,8 +5,9 @@
 {% block content %}
 
 <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    {{ form.management_form }}
+    {{ form.brand }}
+    {{ form.sklepy_adres }}
+    {{ form.czas_zakupu }}
     <br>
     {{ purchase_formset }}
     <input type="submit" value="Dodaj paragon" />

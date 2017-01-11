@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ModelChoiceField, DateField
+from django.forms import ModelForm, ModelChoiceField, DateField, Select, TextInput
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow
 
 class PurchaseForm(ModelForm):
@@ -10,9 +10,29 @@ class PurchaseForm(ModelForm):
 
 class BillForm(ModelForm):
 
-    brand = ModelChoiceField(queryset=SieciSklepow.objects.all())
-    sklepy_adres = ModelChoiceField(queryset=Sklepy.objects.all(), disabled=False)
-    czas_zakupu = DateField(input_formats=['%d/%m/%Y'], disabled=False)
+    brand = ModelChoiceField(queryset=SieciSklepow.objects.all(),
+        label="Sieć sklepów",
+        label_suffix='',
+        widget=Select(attrs={
+            'class': 'form-control',
+        })
+    )
+    sklepy_adres = ModelChoiceField(queryset=Sklepy.objects.all(),
+        label="Sklep",
+        label_suffix='',
+        disabled=True,
+        widget=Select(attrs={
+            'class': 'form-control',
+        })
+    )
+    czas_zakupu = DateField(input_formats=['%d/%m/%Y'],
+        label="Data zakupu",
+        label_suffix='',
+        disabled=True,
+        widget=TextInput(attrs={
+            'class': 'form-control',
+        })
+    )
 
     class Meta:
         model = Paragony
