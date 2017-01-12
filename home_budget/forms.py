@@ -16,7 +16,7 @@ class BillForm(ModelForm):
 
     class Meta:
         model = Paragony
-        exclude = ('brand',)
+        exclude = ()
 
     brand = ModelChoiceField(queryset=SieciSklepow.objects.all(),
         label="Sieć sklepów",
@@ -47,7 +47,7 @@ class ShopForm(ModelForm):
         fields = ('adres', 'sieci_sklepow_nazwa')
 
 PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
-    exclude=(), extra=1, can_delete=False,
+    exclude=(), can_delete=False,
     widgets=get_purchase_widgets(),
     labels=get_purchase_labels(),
 )

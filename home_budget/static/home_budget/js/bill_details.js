@@ -59,7 +59,7 @@ function setUpElements() {
         console.log(numberOfRows);
         if (numberOfRows > 1) {
             var row = $(this).parent().parent();
-            row.hide('slow', function(){ row.remove(); });
+            row.fadeOut(function(){ row.remove(); });
         } else {
             showErrorMessage("Paragon musi zawierać co najmniej jedną pozycję.");
         }

@@ -18,6 +18,8 @@ function setUpElements() {
     billRecords.find('select, input').prop('required', 'required');
 
     var recordToClone = $(billRecords.children()[0]).clone();
+    $(recordToClone).find('input').attr('value', '');
+    $(recordToClone).find('option').attr('selected', false);
     $(recordToClone).find('select, input').prop('disabled', '');
 
     var addRecordButton = $('#add-bill-record');
@@ -50,20 +52,22 @@ function setUpElements() {
     var addBillRecord = function() {
         var newRecord = recordToClone.clone().hide()
         billRecords.append(newRecord);
-        newRecord.fadeIn();
+        newRecord.show('fast');
         renumberRows();
     }
 
     var removeBillRecord = function() {
-        var numberOfRows = $(billRecords).children().length;
+        var numberOfRows = billRecords.children().length;
         console.log(numberOfRows);
         if (numberOfRows > 1) {
             var row = $(this).parent().parent();
-            row.hide('slow', function(){ row.remove(); });
+            row.hide('fast', function(){
+                row.remove();
+                renumberRows();
+            });
         } else {
             showErrorMessage("Paragon musi zawierać co najmniej jedną pozycję.");
         }
-        renumberRows();
     }
 
     function renumberRows() {
@@ -73,7 +77,7 @@ function setUpElements() {
 
         for (var index = 0; index < numberOfRows; index++) {
             var inputs = $(allRows[index]).find("[id^='id_']");
-
+            console.log(index, inputs);
             inputs.each(function(){
                 var input = $(this)
                 var newID = input.attr('id').replace(/[0-9]+/, index);
@@ -86,6 +90,7 @@ function setUpElements() {
         $('input[id$="TOTAL_FORMS"]').attr('value', numberOfRows);
     }
 
+    onBrandSelectChange();
     $(brandSelect).change(onBrandSelectChange);
     $(addRecordButton).click(addBillRecord);
     $(billRecords).on('click', '.remove-bill-record', removeBillRecord);

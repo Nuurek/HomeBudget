@@ -44,7 +44,7 @@ class Sklepy(models.Model):
         db_table = 'sklepy'
 
     def __str__(self):
-        return str(self.sieci_sklepow_nazwa) + ', ' + self.adres
+        return self.adres
 
 
 class Zakupy(models.Model):

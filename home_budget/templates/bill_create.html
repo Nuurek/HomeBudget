@@ -52,9 +52,10 @@
                     </div>
                 </div>
 
-                {% for form in purchase_formset %}
                 <div id="bill-records-rows">
+                {% for form in purchase_formset %}
                     <div class="row">
+                        {{form.id}}
                         <div class="col-md-5 form-group">
                             {{form.nazwa_produktu}}
                         </div>
@@ -73,8 +74,8 @@
                             </button>
                         </div>
                     </div>
-                </div>
                 {% endfor %}
+                </div>
 
                 <div class="form-group">
                     <button id="add-bill-record" type="button" class="btn btn-info" disabled>
