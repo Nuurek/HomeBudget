@@ -53,15 +53,15 @@ class BillView(TemplateView):
         if bill_form.is_valid() and purchase_formset.is_valid():
             if 'pk' not in self.kwargs:
                 bill = bill_form.save()
+                pk = bill.id
             old_purchases = Zakupy.objects.filter(paragony=bill)
-            print(old_purchases)
             old_purchases.delete()
             purchases = purchase_formset.save(commit=False)
             for purchase in purchases:
-                print(purchase)
                 purchase.paragony = bill
                 purchase.save()
-            return HttpResponseRedirect(reverse('bill_details'), args=[pk])
+            print("Saving bill PK: ", pk)
+            return HttpResponseRedirect(reverse('bill_details', args=[pk]))
 
         return self.render_context(bill_form, purchase_formset)
 
