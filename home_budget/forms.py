@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelChoiceField, DateField, Select, TextInput
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import formset_factory, inlineformset_factory, modelformset_factory
 
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow
 from .widgets import get_purchase_widgets, get_purchase_labels
@@ -28,7 +28,6 @@ class BillForm(ModelForm):
     sklepy_adres = ModelChoiceField(queryset=Sklepy.objects.all(),
         label="Sklep",
         label_suffix='',
-        disabled=True,
         widget=Select(attrs={
             'class': 'form-control',
         })
@@ -36,7 +35,6 @@ class BillForm(ModelForm):
     czas_zakupu = DateField(input_formats=['%d/%m/%Y'],
         label="Data zakupu",
         label_suffix='',
-        disabled=True,
         widget=TextInput(attrs={
             'class': 'form-control',
         })

@@ -10,6 +10,15 @@ function setUpDatePicker() {
     $('#bill-date').datepicker('update', new Date());
 }
 
+function setUpDynamicFormset() {
+    $('#bill-records-rows .row').formset({
+        deleteCssClass: "col-md-1 form-group",
+        deleteText: "",
+        addCssClass: "add-bill-record btn btn-info",
+        addText: "",
+    });
+}
+
 function setUpElements() {
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
@@ -49,6 +58,7 @@ function setUpElements() {
 
     var addBillRecord = function() {
         billRecords.append(recordToClone.clone());
+        renumberRows();
     }
 
     var removeBillRecord = function() {
@@ -58,6 +68,27 @@ function setUpElements() {
         } else {
             showErrorMessage("Paragon musi zawierać co najmniej jedną pozycję.");
         }
+        renumberRows();
+    }
+
+    function renumberRows() {
+        var allRows = billRecords.children();
+
+        var numberOfRows = allRows.length;
+
+        for (var index = 0; index < numberOfRows; index++) {
+            var inputs = $(allRows[index]).find("[id^='id_']");
+
+            inputs.each(function(){
+                var input = $(this)
+                var newID = input.attr('id').replace(/[0-9]+/, index);
+                input.attr('id', newID);
+                var newID = input.attr('name').replace(/[0-9]+/, index);
+                input.attr('name', newID);
+            })
+        }
+
+        $('input[id$="TOTAL_FORMS"]').attr('value', numberOfRows);
     }
 
     $(brandSelect).change(onBrandSelectChange);
@@ -69,5 +100,6 @@ function setUpElements() {
 
 (function($){
     setUpDatePicker();
+    //setUpDynamicFormset();
     setUpElements();
 })(jQuery);

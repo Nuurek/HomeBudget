@@ -42,12 +42,14 @@ class BillCreateView(TemplateView):
     def post(self, request, *args, **kwargs):
         bill_form = BillForm(data=request.POST)
 
-        PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
-            exclude=(), can_delete=False,
-            widgets=get_purchase_widgets(),
-            labels=get_purchase_labels(),
-        )
         formset = PurchaseFormSet(data=request.POST)
+
+        print("POST")
+        print(request.POST)
+        print("Bill: ", bill_form)
+        print("Is valid: ", bill_form.is_valid())
+        print("Purchases: ", formset)
+        print("Is valid: ", formset.is_valid())
 
         if bill_form.is_valid() and formset.is_valid():
             bill = bill_form.save()
@@ -84,10 +86,8 @@ class BillDetailsView(TemplateView):
         bill_form = BillForm(instance=bill)
 
         purchases = Zakupy.objects.filter(paragony=pk)
-        print(purchases)
 
         purchase_formset = PurchaseRetrieveFormSet(instance=bill)
-        print(purchase_formset)
 
         context = {
             'form': bill_form,
