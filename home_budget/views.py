@@ -12,55 +12,40 @@ from .forms import (
 )
 
 
-class BillView(TemplateView):
+class BillCreateView(TemplateView):
 
-    template_name = "bill_create.html"
+    template_name = "bill.html"
 
-    def get(self, request, bill=None,
-        *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(BillCreateView, self).__init__(*args, **kwargs)
+        self.initial_number_of_rows = 1
 
-        initial_bill_data = {}
-
-        if 'pk' in self.kwargs:
-            pk = self.kwargs['pk']
-            bill = Paragony.objects.get(id=pk)
-            shop = bill.sklepy_adres
-            brand = shop.sieci_sklepow_nazwa
-            PurchaseFormSet.extra = 0
-            initial_bill_data['brand'] = brand
-            initial_bill_data['sklepy_adres'] = shop
-        else:
-            PurchaseFormSet.extra = 1
-
+    def get(self, request, bill=None, initial_bill_data=None, *args, **kwargs):
         bill_form = BillForm(instance=bill, initial=initial_bill_data)
 
+        PurchaseFormSet.extra = self.initial_number_of_rows
         purchase_formset = PurchaseFormSet(instance=bill)
 
         return self.render_context(bill_form, purchase_formset)
 
-    def post(self, request, *args, **kwargs):
-
-        if 'pk' in self.kwargs:
-            pk = self.kwargs['pk']
-            bill = Paragony.objects.get(id=pk)
-        else:
-            bill = None
-
+    def post(self, request, bill=None, *args, **kwargs):
         bill_form = BillForm(data=request.POST, instance=bill)
 
         purchase_formset = PurchaseFormSet(data=request.POST)
 
         if bill_form.is_valid() and purchase_formset.is_valid():
-            if 'pk' not in self.kwargs:
+            if bill is None:
                 bill = bill_form.save()
-                pk = bill.id
-            old_purchases = Zakupy.objects.filter(paragony=bill)
-            old_purchases.delete()
+            else:
+                old_purchases = Zakupy.objects.filter(paragony=bill)
+                old_purchases.delete()
+
             purchases = purchase_formset.save(commit=False)
             for purchase in purchases:
                 purchase.paragony = bill
                 purchase.save()
-            print("Saving bill PK: ", pk)
+
+            pk = bill.id
             return HttpResponseRedirect(reverse('bill_details', args=[pk]))
 
         return self.render_context(bill_form, purchase_formset)
@@ -83,3 +68,29 @@ class BillView(TemplateView):
             brands_shops[brand].append(shop['adres'])
 
         return json.dumps(brands_shops)
+
+
+class BillDetailsView(BillCreateView):
+
+    def __init__(self, *args, **kwargs):
+        super(BillDetailsView, self).__init__(*args, **kwargs)
+        self.initial_number_of_rows = 0
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        bill = Paragony.objects.get(id=pk)
+        shop = bill.sklepy_adres
+        brand = shop.sieci_sklepow_nazwa
+        initial_bill_data = {}
+        initial_bill_data['brand'] = brand
+        initial_bill_data['sklepy_adres'] = shop
+
+        return super(BillDetailsView, self).get(request, bill=bill,
+            initial_bill_data=initial_bill_data, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        bill = Paragony.objects.get(id=pk)
+
+        return super(BillDetailsView, self).post(request, bill=bill, *args,
+            **kwargs)
