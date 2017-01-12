@@ -1,5 +1,4 @@
-from django.views.generic import TemplateView, DetailView
-from django.db.models.functions import Lower
+from django.views.generic import TemplateView, ListView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import json
@@ -46,7 +45,7 @@ class BillCreateView(TemplateView):
                 purchase.save()
 
             pk = bill.id
-            return HttpResponseRedirect(reverse('bill_details', args=[pk]))
+            return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
 
         return self.render_context(bill_form, purchase_formset)
 
@@ -60,7 +59,8 @@ class BillCreateView(TemplateView):
         return self.render_to_response(context)
 
     def _get_shops(self):
-        shops = Sklepy.objects.all().values('sieci_sklepow_nazwa', 'adres').order_by('sieci_sklepow_nazwa', 'adres')
+        shops = Sklepy.objects.all().values('sieci_sklepow_nazwa', 'adres') \
+                        .order_by('sieci_sklepow_nazwa', 'adres')
 
         brands_shops = defaultdict(list)
         for shop in shops:
@@ -70,10 +70,12 @@ class BillCreateView(TemplateView):
         return json.dumps(brands_shops)
 
 
-class BillDetailsView(BillCreateView):
+class BillDetailView(BillCreateView):
+
+    template_name = "bill_create.html"
 
     def __init__(self, *args, **kwargs):
-        super(BillDetailsView, self).__init__(*args, **kwargs)
+        super(BillDetailView, self).__init__(*args, **kwargs)
         self.initial_number_of_rows = 0
 
     def get(self, request, *args, **kwargs):
@@ -85,12 +87,23 @@ class BillDetailsView(BillCreateView):
         initial_bill_data['brand'] = brand
         initial_bill_data['sklepy_adres'] = shop
 
-        return super(BillDetailsView, self).get(request, bill=bill,
-            initial_bill_data=initial_bill_data, *args, **kwargs)
+        return super(BillDetailView, self).get(
+            request, bill=bill, initial_bill_data=initial_bill_data,
+            *args, **kwargs
+        )
 
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         bill = Paragony.objects.get(id=pk)
 
-        return super(BillDetailsView, self).post(request, bill=bill, *args,
-            **kwargs)
+        return super(BillDetailView, self).post(
+            request, bill=bill, *args, **kwargs
+        )
+
+
+class BillListView(ListView):
+    template_name = "home.html"
+
+    def get_queryset(self):
+        return Paragony.objects \
+                        .select_related('sklepy_adres__sieci_sklepow_nazwa')

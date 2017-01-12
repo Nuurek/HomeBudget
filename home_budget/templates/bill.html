@@ -4,94 +4,92 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
-    <link rel="stylesheet" href="{% static "home_budget/css/bill_create.css" %}">
+    <link rel="stylesheet" href="{% static "home_budget/css/bill.css" %}">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <form id="create-bill-form" class="form-contact" role="form" method="post">{% csrf_token %}
-            <h1 class="text-center">Dodaj paragon</h1>
-            <div id="bill-details-form" class="form-group">
-                <div class="form-group text-center">
-                    {{ form.brand.label_tag }}
-                    {{ form.brand }}
-                </div>
-                <div class="form-group text-center">
-                    {{ form.sklepy_adres.label_tag }}
-                    {{ form.sklepy_adres }}
-                    <script type="text/javascript">
-                        var shops = JSON.parse('{{ shops | escapejs }}');
-                    </script>
-                </div>
-                <div class="form-group text-center">
-                    {{ form.czas_zakupu.label_tag }}
-                    <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
-                        {{ form.czas_zakupu }}
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
+<div class="row">
+    <form id="create-bill-form" class="form-contact" role="form" method="post">{% csrf_token %}
+        <h1 class="text-center">{% block header %}Dodaj paragon{% endblock %}</h1>
+        <div id="bill-details-form" class="form-group">
+            <div class="form-group text-center">
+                {{ form.brand.label_tag }}
+                {{ form.brand }}
+            </div>
+            <div class="form-group text-center">
+                {{ form.sklepy_adres.label_tag }}
+                {{ form.sklepy_adres }}
+                <script type="text/javascript">
+                    var shops = JSON.parse('{{ shops | escapejs }}');
+                </script>
+            </div>
+            <div class="form-group text-center">
+                {{ form.czas_zakupu.label_tag }}
+                <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
+                    {{ form.czas_zakupu }}
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div id="bill-records" class="form-group text-center">
-                {{ purchase_formset.management_form }}
-                <div id="record-labels" class="row">
+        <div id="bill-records" class="form-group text-center">
+            {{ purchase_formset.management_form }}
+            <div id="record-labels" class="row">
+                <div class="col-md-5 form-group">
+                    {{ purchase_formset.0.nazwa_produktu.label_tag }}
+                </div>
+                <div class="col-md-3 form-group">
+                    {{ purchase_formset.0.kategorie_zakupu_nazwa.label_tag }}
+                </div>
+                <div class="col-md-2 form-group">
+                    {{ purchase_formset.0.cena_jednostkowa.label_tag }}
+                </div>
+                <div class="col-md-1 form-group">
+                    {{ purchase_formset.0.ilosc_produktu.label_tag }}
+                </div>
+            </div>
+
+            <div id="bill-records-rows">
+            {% for form in purchase_formset %}
+                <div class="row">
+                    {{form.id}}
                     <div class="col-md-5 form-group">
-                        {{ purchase_formset.0.nazwa_produktu.label_tag }}
+                        {{form.nazwa_produktu}}
                     </div>
                     <div class="col-md-3 form-group">
-                        {{ purchase_formset.0.kategorie_zakupu_nazwa.label_tag }}
+                        {{form.kategorie_zakupu_nazwa}}
                     </div>
                     <div class="col-md-2 form-group">
-                        {{ purchase_formset.0.cena_jednostkowa.label_tag }}
+                        {{form.cena_jednostkowa}}
                     </div>
                     <div class="col-md-1 form-group">
-                        {{ purchase_formset.0.ilosc_produktu.label_tag }}
+                        {{form.ilosc_produktu}}
+                    </div>
+                    <div class="col-md-1 form-group">
+                        <button type="button" class="btn btn-warning remove-bill-record">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </div>
                 </div>
-
-                <div id="bill-records-rows">
-                {% for form in purchase_formset %}
-                    <div class="row">
-                        {{form.id}}
-                        <div class="col-md-5 form-group">
-                            {{form.nazwa_produktu}}
-                        </div>
-                        <div class="col-md-3 form-group">
-                            {{form.kategorie_zakupu_nazwa}}
-                        </div>
-                        <div class="col-md-2 form-group">
-                            {{form.cena_jednostkowa}}
-                        </div>
-                        <div class="col-md-1 form-group">
-                            {{form.ilosc_produktu}}
-                        </div>
-                        <div class="col-md-1 form-group">
-                            <button type="button" class="btn btn-warning remove-bill-record">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-
-                <div class="form-group">
-                    <button id="add-bill-record" type="button" class="btn btn-info" disabled>
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                </div>
+            {% endfor %}
             </div>
+
             <div class="form-group">
-                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Dodaj" disabled>
-                </input>
+                <button id="add-bill-record" type="button" class="btn btn-info" disabled>
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
             </div>
-    </div>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Dodaj{% endblock %}" disabled>
+            </input>
+        </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    <script src="{% static 'home_budget/js/bill_create.js' %}"></script>
+    <script src="{% static 'home_budget/js/bill.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div id="bills=list">
+        <div class="panel list-group">
+            {% regroup object_list by czas_zakupu as days %}
+
+            {% for day in days %}
+                <a href="#" class="list-group-item list-group-item-info text-center display-1" data-toggle="collapse" data-target="#day-{{ day.grouper | slugify }}" data-parent="#bills-list">
+                    <strong>{{ day.grouper }}</strong>
+                </a>
+                <div id="day-{{ day.grouper | slugify }}" class="sublinks collapse in">
+                    {% for bill in day.list %}
+                        <a href="#" class="list-group-item">
+                            {{ bill.sklepy_adres.sieci_sklepow_nazwa }}, {{ bill.sklepy_adres }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
