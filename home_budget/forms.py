@@ -1,5 +1,9 @@
 from django.forms import ModelForm, ModelChoiceField, DateField, Select, TextInput
+from django.forms import inlineformset_factory, modelformset_factory
+
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow
+from .widgets import get_purchase_widgets, get_purchase_labels
+
 
 class PurchaseForm(ModelForm):
 
@@ -38,9 +42,18 @@ class BillForm(ModelForm):
         })
     )
 
-
 class ShopForm(ModelForm):
 
     class Meta:
         model = Sklepy
         fields = ('adres', 'sieci_sklepow_nazwa')
+
+PurchaseFormSet = inlineformset_factory(Paragony, Zakupy,
+    exclude=(), extra=1, can_delete=False,
+    widgets=get_purchase_widgets(),
+    labels=get_purchase_labels(),
+)
+
+class PurchaseRetrieveFormSet(PurchaseFormSet):
+    extra = 0
+    can_delete = True
