@@ -90,7 +90,7 @@ function setUpElements() {
     $(addRecordButton).click(addBillRecord);
     $(billRecords).on('click', '.remove-bill-record', removeBillRecord);
 
-    checkForErrorAndDisable();
+    //checkForErrorAndDisable();
 }
 
 (function($){
