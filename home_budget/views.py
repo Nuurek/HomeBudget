@@ -3,13 +3,13 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 import json
 from collections import defaultdict
+from django.db.models import F, Sum
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
     PurchaseForm, BillForm, ShopForm, PurchaseFormSet,
     PurchaseRetrieveFormSet
 )
-from .sql_functor import SQLFunctor
 
 
 class BillCreateView(TemplateView):
@@ -107,6 +107,14 @@ class BillListView(ListView):
 
     def get_queryset(self):
         sql_functor = SQLFunctor()
-        queryset = sql_functor.get_bills_details()
+        # queryset = sql_functor.get_bills_details()
+        queryset = Paragony.objects.all().values(
+            'id',
+            'sklepy_adres',
+            'czas_zakupu',
+            'sklepy_adres__sieci_sklepow_nazwa'
+            ).annotate(total=Sum(
+                F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+            ))
         print(queryset)
         return queryset

@@ -5,22 +5,20 @@
 {% block content %}
     <div id="bills=list">
         <div class="panel list-group">
-            {% regroup object_list by PURCHASE_DATE as days %}
+            {% regroup object_list by czas_zakupu as days %}
             {% for day in days %}
                 <a href="#" class="list-group-item list-group-item-info text-center display-1" data-toggle="collapse" data-target="#day-{{ day.grouper | slugify }}" data-parent="#bills-list">
-                    <strong>{{ day.grouper | date:"j E Y"}}</strong>
+                    <strong>{{ day.grouper }}</strong>
                 </a>
                 <div id="day-{{ day.grouper | slugify }}" class="sublinks collapse in">
                     {% for bill in day.list %}
                         <a href="#" class="list-group-item">
                             <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-7">
-                                    {{ bill.SHOP_NAME }}, {{ bill.SHOP_ADDRESS }}
+                                <div class="col-md-11">
+                                    {{ bill.sklepy_adres__sieci_sklepow_nazwa }}, {{ bill.sklepy_adres }}
                                 </div>
-                                <div class="col-md-3"></div>
                                 <div class="col-md-1">
-                                    <strong>{{ bill.TOTAL }} zł</strong>
+                                    <strong>{{ bill.total }} zł</strong>
                                 </div>
                             </div>
                         </a>
