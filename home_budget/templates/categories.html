@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block header %}Kategorie zakupów{% endblock %}
+{% block content %}
+    <div class="form-group text-center">
+        {% for form in formset %}
+        <div class="row">
+            <div class="col-xs-8">
+                {{ form.nazwa }}
+            </div>
+            <div class="col-xs-2">
+                {{ form.czy_opcjonalny }}
+            </div>
+            <div class="col-xs-2">
+                {{ form.DELETE }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

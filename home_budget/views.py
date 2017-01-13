@@ -8,7 +8,7 @@ from django.db.models import F, Sum
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
     PurchaseForm, BillForm, ShopForm, PurchaseFormSet,
-    PurchaseRetrieveFormSet
+    PurchaseRetrieveFormSet, CategoryFormSet
 )
 
 
@@ -116,3 +116,18 @@ class BillListView(ListView):
             ))
         print(queryset)
         return queryset
+
+
+class CategoryListView(TemplateView):
+    template_name = "categories.html"
+
+    model = KategorieZakupu
+
+    def get(self, request, *args, **kwargs):
+        formset = CategoryFormSet()
+
+        context = {
+            'formset': formset
+        }
+
+        return self.render_to_response(context)

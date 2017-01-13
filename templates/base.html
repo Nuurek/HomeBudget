@@ -41,6 +41,9 @@
                         <a href="">Sklepy</a>
                     </li>
                     <li>
+                        <a href="">Kategorie</a>
+                    </li>
+                    <li>
                         <a href="">Statystyki</a>
                     </li>
                 </ul>
@@ -49,6 +52,7 @@
     </div>
     {% endblock %}
     <div class="container">
+        <h1 class="text-center">{% block header %}Budżet domowy{% endblock %}</h1>
         {% block content %}{% endblock %}
     </div>
     <script src="{% static 'js/jquery-3.1.1.js' %}"></script>
