@@ -9,6 +9,7 @@ from .forms import (
     PurchaseForm, BillForm, ShopForm, PurchaseFormSet,
     PurchaseRetrieveFormSet
 )
+from .sql_functor import SQLFunctor
 
 
 class BillCreateView(TemplateView):
@@ -105,5 +106,7 @@ class BillListView(ListView):
     template_name = "home.html"
 
     def get_queryset(self):
-        return Paragony.objects \
-                        .select_related('sklepy_adres__sieci_sklepow_nazwa')
+        sql_functor = SQLFunctor()
+        queryset = sql_functor.get_bills_details()
+        print(queryset)
+        return queryset
