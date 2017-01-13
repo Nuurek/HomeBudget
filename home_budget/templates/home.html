@@ -12,7 +12,7 @@
                 </a>
                 <div id="day-{{ day.grouper | slugify }}" class="sublinks collapse in">
                     {% for bill in day.list %}
-                        <a href="#" class="list-group-item">
+                        <a href="{% url 'bill_detail' bill.id %}" class="list-group-item">
                             <div class="row">
                                 <div class="col-md-11">
                                     {{ bill.sklepy_adres__sieci_sklepow_nazwa }}, {{ bill.sklepy_adres }}

@@ -106,8 +106,6 @@ class BillListView(ListView):
     template_name = "home.html"
 
     def get_queryset(self):
-        sql_functor = SQLFunctor()
-        # queryset = sql_functor.get_bills_details()
         queryset = Paragony.objects.all().values(
             'id',
             'sklepy_adres',
