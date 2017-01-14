@@ -1,5 +1,9 @@
-from django.forms import ModelForm, ModelChoiceField, DateField, Select, TextInput
-from django.forms import formset_factory, inlineformset_factory, modelformset_factory
+from django.forms import (
+    ModelForm, ModelChoiceField, DateField, Select, TextInput
+)
+from django.forms import (
+    formset_factory, inlineformset_factory, modelformset_factory
+)
 
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow, KategorieZakupu
 from .widgets import (
@@ -14,21 +18,24 @@ class BillForm(ModelForm):
         model = Paragony
         exclude = ()
 
-    brand = ModelChoiceField(queryset=SieciSklepow.objects.all(),
+    brand = ModelChoiceField(
+        queryset=SieciSklepow.objects.all(),
         label="Sieć sklepów",
         label_suffix='',
         widget=Select(attrs={
             'class': 'form-control',
         })
     )
-    sklepy_adres = ModelChoiceField(queryset=Sklepy.objects.all(),
+    sklepy_adres = ModelChoiceField(
+        queryset=Sklepy.objects.all(),
         label="Sklep",
         label_suffix='',
         widget=Select(attrs={
             'class': 'form-control',
         })
     )
-    czas_zakupu = DateField(input_formats=['%d/%m/%Y'],
+    czas_zakupu = DateField(
+        input_formats=['%d/%m/%Y'],
         label="Data zakupu",
         label_suffix='',
         widget=TextInput(attrs={
@@ -58,7 +65,7 @@ class PurchaseRetrieveFormSet(PurchaseFormSet):
 
 CategoryFormSet = modelformset_factory(
     KategorieZakupu,
-    fields=('nazwa', 'czy_opcjonalny'),
+    fields=('id', 'nazwa', 'czy_opcjonalny',),
     extra=0,
     can_delete=True,
     widgets=get_categories_widgets(),

@@ -131,3 +131,12 @@ class CategoryListView(TemplateView):
         }
 
         return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        formset = CategoryFormSet(data=request.POST)
+
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('categories'))
+        else:
+            return self.render_context(formset)

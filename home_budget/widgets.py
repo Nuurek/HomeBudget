@@ -1,4 +1,6 @@
-from django.forms import Select, TextInput, NumberInput, CheckboxInput
+from django.forms import (
+    Select, TextInput, NumberInput, CheckboxInput, HiddenInput
+)
 
 
 def get_purchase_widgets():
@@ -34,6 +36,7 @@ def get_categories_widgets():
         'czy_opcjonalny': CheckboxInput(attrs={
             'class': '',
         }),
+        'id': HiddenInput(),
     }
 
 
