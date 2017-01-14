@@ -10,7 +10,7 @@ from django.db.models import F, Sum, Count
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
     BillForm, ShopForm, PurchaseFormSet, PurchaseRetrieveFormSet,
-    CategoryFormSet, BrandFormSet
+    CategoryFormSet, ShopFormSet
 )
 
 
@@ -171,7 +171,6 @@ class BrandListView(ListView):
         return queryset
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         brand_name = request.POST['brand-name']
 
         SieciSklepow.objects.create(nazwa=brand_name)
@@ -179,5 +178,40 @@ class BrandListView(ListView):
         return HttpResponseRedirect(reverse('brands'))
 
 
-class ShopListView(ListView):
-    pass
+class BrandDetailView(TemplateView):
+    template_name = "brand.html"
+
+    def get(self, request, *args, **kwargs):
+        brand_name = self.kwargs['brand_name']
+        brand = SieciSklepow.objects.get(nazwa=brand_name)
+        brand_shops = ShopFormSet(
+            instance=brand,
+            queryset=Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
+        )
+
+        context = {
+            "brand_name": brand_name,
+            "brand_shops": brand_shops,
+        }
+
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        formset = CategoryFormSet(data=request.POST)
+
+        context = {
+            'formset': formset
+        }
+
+        if formset.is_valid():
+            try:
+                formset.save()
+            except IntegrityError as error:
+                message = messages.error(
+                    request,
+                    'Jedna z kategorii posiada przypisane zakupy.'
+                )
+                return self.render_to_response(context)
+            return HttpResponseRedirect(reverse('categories'))
+        else:
+            return self.render_to_response(context)

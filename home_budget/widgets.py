@@ -45,3 +45,11 @@ def get_categories_labels():
         'nazwa': "Nazwa",
         'czy_opcjonalny': "Czy opcjonalne?",
     }
+
+
+def get_shops_widgets():
+    return {
+        'adres': TextInput(attrs={
+            'class': 'form-control',
+        }),
+    }

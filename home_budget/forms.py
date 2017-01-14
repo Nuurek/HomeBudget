@@ -9,6 +9,7 @@ from .models import Paragony, Zakupy, Sklepy, SieciSklepow, KategorieZakupu
 from .widgets import (
     get_purchase_widgets, get_purchase_labels,
     get_categories_widgets, get_categories_labels,
+    get_shops_widgets,
 )
 
 
@@ -72,9 +73,10 @@ CategoryFormSet = modelformset_factory(
     labels=get_categories_labels(),
 )
 
-
-BrandFormSet = modelformset_factory(
-    SieciSklepow,
-    fields=('nazwa',),
+ShopFormSet = inlineformset_factory(
+    SieciSklepow, Sklepy,
+    exclude=(),
+    can_delete=True,
     extra=0,
+    widgets=get_shops_widgets(),
 )
