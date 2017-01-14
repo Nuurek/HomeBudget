@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView, ListView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db import IntegrityError
+from django.contrib import messages
 import json
 from collections import defaultdict
 from django.db.models import F, Sum
@@ -134,8 +136,19 @@ class CategoryListView(TemplateView):
     def post(self, request, *args, **kwargs):
         formset = CategoryFormSet(data=request.POST)
 
+        context = {
+            'formset': formset
+        }
+
         if formset.is_valid():
-            formset.save()
+            try:
+                formset.save()
+            except IntegrityError as error:
+                message = messages.error(
+                    request,
+                    'Jedna z kategorii posiada przypisane zakupy.'
+                )
+                return self.render_to_response(context)
             return HttpResponseRedirect(reverse('categories'))
         else:
-            return self.render_context(formset)
+            return self.render_to_response(context)

@@ -8,6 +8,9 @@
 
 {% block header %}Kategorie zakupów{% endblock %}
 {% block content %}
+{% for message in messages %}
+   <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+{% endfor %}
 <form id="categories-form" class="form-contact" role="form" method="post">{% csrf_token %}
     <div id="categories-formset" class="form-group text-center">
         {{ formset.management_form }}
