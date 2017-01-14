@@ -38,7 +38,7 @@
                         <a href="/">Zakupy</a>
                     </li>
                     <li>
-                        <a href="">Sklepy</a>
+                        <a href="{% url 'brands' %}">Sklepy</a>
                     </li>
                     <li>
                         <a href="{% url 'categories' %}">Kategorie</a>
@@ -61,6 +61,7 @@
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block scripts %}{% endblock %}
+    {% block messages %}{% endblock %}
 </body>
 
 </html>

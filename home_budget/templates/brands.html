@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+
+{% block header %}Sieci sklepów{% endblock %}
+{% block content %}
+    <ul class="list-group text-center col-md-6 col-md-offset-3">
+        {% for brand in object_list %}
+        <a href="#" class="list-group-item">
+            {{ brand }}
+        </a>
+        {% endfor %}
+    </ul>
+{% endblock %}

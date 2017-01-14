@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from .views import (
-    BillCreateView, BillDetailView, BillListView, CategoryListView
+    BillCreateView, BillDetailView, BillListView, CategoryListView,
+    BrandListView, ShopListView
 )
 
 
@@ -13,4 +14,6 @@ urlpatterns = [
         name='bill_detail'
     ),
     url(r'^categories', CategoryListView.as_view(), name='categories'),
+    url(r'^brands', BrandListView.as_view(), name='brands'),
+    url(r'^shops', ShopListView.as_view(), name='shops'),
 ]

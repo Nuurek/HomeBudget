@@ -9,8 +9,8 @@ from django.db.models import F, Sum
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
-    BillForm, ShopForm, PurchaseFormSet,
-    PurchaseRetrieveFormSet, CategoryFormSet
+    BillForm, ShopForm, PurchaseFormSet, PurchaseRetrieveFormSet,
+    CategoryFormSet, BrandFormSet
 )
 
 
@@ -26,14 +26,22 @@ class BillCreateView(TemplateView):
         bill_form = BillForm(instance=bill, initial=initial_bill_data)
 
         PurchaseFormSet.extra = self.initial_number_of_rows
-        purchase_formset = PurchaseFormSet(instance=bill, queryset=Zakupy.objects.filter(paragony=bill.id))
+
+        purchase_formset = PurchaseFormSet(
+            instance=bill,
+            queryset=Zakupy.objects.filter(paragony=bill)
+        )
 
         return self.render_context(bill_form, purchase_formset)
 
     def post(self, request, bill=None, *args, **kwargs):
         bill_form = BillForm(data=request.POST, instance=bill)
 
-        purchase_formset = PurchaseFormSet(data=request.POST, instance=bill, queryset=Zakupy.objects.filter(paragony=bill.id))
+        purchase_formset = PurchaseFormSet(
+            data=request.POST,
+            instance=bill,
+            queryset=Zakupy.objects.filter(paragony=bill)
+        )
 
         if bill_form.is_valid() and purchase_formset.is_valid():
             if bill is None:
@@ -122,8 +130,6 @@ class BillListView(ListView):
 class CategoryListView(TemplateView):
     template_name = "categories.html"
 
-    model = KategorieZakupu
-
     def get(self, request, *args, **kwargs):
         formset = CategoryFormSet()
 
@@ -152,3 +158,13 @@ class CategoryListView(TemplateView):
             return HttpResponseRedirect(reverse('categories'))
         else:
             return self.render_to_response(context)
+
+
+class BrandListView(ListView):
+    template_name = "brands.html"
+
+    model = SieciSklepow
+    
+
+class ShopListView(ListView):
+    pass

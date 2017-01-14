@@ -71,3 +71,10 @@ CategoryFormSet = modelformset_factory(
     widgets=get_categories_widgets(),
     labels=get_categories_labels(),
 )
+
+
+BrandFormSet = modelformset_factory(
+    SieciSklepow,
+    fields=('nazwa',),
+    extra=0,
+)
