@@ -52,7 +52,7 @@ class ShopForm(ModelForm):
 
 PurchaseFormSet = inlineformset_factory(
     Paragony, Zakupy,
-    exclude=(), can_delete=False,
+    exclude=(), can_delete=True,
     widgets=get_purchase_widgets(),
     labels=get_purchase_labels(),
 )

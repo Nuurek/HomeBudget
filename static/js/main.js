@@ -87,7 +87,7 @@ class Formset {
             if (isInitialRow) {
                 hiddenRowCallback = function() {
                     row.attr('hidden', true);
-                    var id = $(row.find('input')).attr('id');
+                    var id = $(row.find('input')).attr('name');
                     var index = id.lastIndexOf('-');
                     var deleteAttr = id.substring(0, index + 1);
                     deleteAttr += "DELETE";

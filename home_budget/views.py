@@ -24,23 +24,22 @@ class BillCreateView(TemplateView):
         bill_form = BillForm(instance=bill, initial=initial_bill_data)
 
         PurchaseFormSet.extra = self.initial_number_of_rows
-        purchase_formset = PurchaseFormSet(instance=bill)
+        purchase_formset = PurchaseFormSet(instance=bill, queryset=Zakupy.objects.filter(paragony=bill.id))
 
         return self.render_context(bill_form, purchase_formset)
 
     def post(self, request, bill=None, *args, **kwargs):
         bill_form = BillForm(data=request.POST, instance=bill)
 
-        purchase_formset = PurchaseFormSet(data=request.POST)
+        purchase_formset = PurchaseFormSet(data=request.POST, instance=bill, queryset=Zakupy.objects.filter(paragony=bill.id))
 
         if bill_form.is_valid() and purchase_formset.is_valid():
             if bill is None:
                 bill = bill_form.save()
-            else:
-                old_purchases = Zakupy.objects.filter(paragony=bill)
-                old_purchases.delete()
 
             purchases = purchase_formset.save(commit=False)
+            for purchase_for_deletion in purchase_formset.deleted_objects:
+                purchase_for_deletion.delete()
             for purchase in purchases:
                 purchase.paragony = bill
                 purchase.save()
