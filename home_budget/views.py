@@ -7,7 +7,7 @@ from django.db.models import F, Sum
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
-    PurchaseForm, BillForm, ShopForm, PurchaseFormSet,
+    BillForm, ShopForm, PurchaseFormSet,
     PurchaseRetrieveFormSet, CategoryFormSet
 )
 

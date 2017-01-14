@@ -2,7 +2,8 @@ from django.db import models
 
 
 class KategorieZakupu(models.Model):
-    nazwa = models.CharField(primary_key=True, max_length=30)
+    id = models.IntegerField(primary_key=True)
+    nazwa = models.CharField(max_length=30)
     czy_opcjonalny = models.BooleanField()
 
     class Meta:
@@ -58,8 +59,8 @@ class Zakupy(models.Model):
     nazwa_produktu = models.CharField(max_length=30)
     cena_jednostkowa = models.FloatField()
     ilosc_produktu = models.FloatField()
-    kategorie_zakupu_nazwa = models.ForeignKey(
-        KategorieZakupu, models.DO_NOTHING, db_column='kategorie_zakupu_nazwa')
+    kategorie_zakupu_id = models.ForeignKey(
+        KategorieZakupu, models.DO_NOTHING, db_column='kategorie_zakupu_id')
     paragony = models.ForeignKey(Paragony, models.DO_NOTHING)
 
     class Meta:

@@ -40,7 +40,7 @@
                 {{ purchase_formset.0.nazwa_produktu.label_tag }}
             </div>
             <div class="col-md-3 form-group">
-                {{ purchase_formset.0.kategorie_zakupu_nazwa.label_tag }}
+                {{ purchase_formset.0.kategorie_zakupu_id.label_tag }}
             </div>
             <div class="col-md-2 form-group">
                 {{ purchase_formset.0.cena_jednostkowa.label_tag }}
@@ -58,7 +58,7 @@
                     {{form.nazwa_produktu}}
                 </div>
                 <div class="col-md-3 form-group">
-                    {{form.kategorie_zakupu_nazwa}}
+                    {{form.kategorie_zakupu_id}}
                 </div>
                 <div class="col-md-2 form-group">
                     {{form.cena_jednostkowa}}
