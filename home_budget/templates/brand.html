@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 
-{% block header %}{{ brand_name }}{% endblock %}
+{% load static %}
+
+{% block header %}
+<div class="row">
+    <div class="form-group input-group-lg col-md-6 col-md-offset-3 has-success">
+        <strong><input id="brand-name" class="form-control input-lg text-center" type="text" name="" value="{{ brand_name }}" disabled></strong>
+    </div>
+</div>
+{% endblock %}
 {% block content %}
     <div class="row form-group">
         <div class="col-md-2 col-md-offset-5 form-group text-center">
-            <button type="button" class="btn btn-info remove-form">
+            <button id="brand-name-edit" type="button" class="btn btn-info remove-form">
                 <span class="glyphicon glyphicon-edit"></span>
             </button>
             <button type="button" class="btn btn-danger remove-form">
@@ -15,7 +23,7 @@
     <div id="forms" class="form-group text-center">
         {% for shop in brand_shops %}
             <div class="row">
-                <div class="col-md-6 col-md-offset-3">
+                <div class="col-md-8 col-md-offset-2">
                     <div class="col-md-10 form-group">
                         {{shop.adres}}
                     </div>
@@ -33,4 +41,12 @@
             </button>
         </div>
     </div>
+    <div class="form-group col-md-8 col-md-offset-2">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Zapisz{% endblock %}">
+        </input>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'home_budget/js/brand.js' %}"></script>
 {% endblock %}
