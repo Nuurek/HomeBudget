@@ -2,7 +2,10 @@ from django.forms import ModelForm, ModelChoiceField, DateField, Select, TextInp
 from django.forms import formset_factory, inlineformset_factory, modelformset_factory
 
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow, KategorieZakupu
-from .widgets import get_purchase_widgets, get_purchase_labels
+from .widgets import (
+    get_purchase_widgets, get_purchase_labels,
+    get_categories_widgets, get_categories_labels,
+)
 
 
 class BillForm(ModelForm):
@@ -56,4 +59,8 @@ class PurchaseRetrieveFormSet(PurchaseFormSet):
 CategoryFormSet = modelformset_factory(
     KategorieZakupu,
     fields=('nazwa', 'czy_opcjonalny'),
+    extra=0,
+    can_delete=True,
+    widgets=get_categories_widgets(),
+    labels=get_categories_labels(),
 )

@@ -1,20 +1,62 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static "css/animated-checkbox.css" %}">
+{% endblock %}
+
 {% block header %}Kategorie zakupów{% endblock %}
 {% block content %}
-    <div class="form-group text-center">
-        {% for form in formset %}
-        <div class="row">
-            <div class="col-xs-8">
-                {{ form.nazwa }}
-            </div>
-            <div class="col-xs-2">
-                {{ form.czy_opcjonalny }}
-            </div>
-            <div class="col-xs-2">
-                {{ form.DELETE }}
+    <div id="bill-records" class="form-group text-center">
+        <div class="row px-2">
+            <div class="col-xs-12 col-sm-6 col-md-10 col-md-offset-3">
+                <div class="col-md-4 form-group">
+                    {{ formset.0.nazwa.label_tag }}
+                </div>
+                <div class="col-md-2 form-group">
+                    {{ formset.0.czy_opcjonalny.label_tag }}
+                </div>
             </div>
         </div>
-        {% endfor %}
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-10 col-md-offset-3">
+                {% for form in formset %}
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            {{ form.nazwa }}
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {{ form.czy_opcjonalny }}
+                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 form-group">
+                            <button type="button" class="btn btn-warning remove-bill-record">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button id="add-bill-record" type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
     </div>
+    <div class="form-group">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Zapisz{% endblock %}">
+        </input>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'home_budget/js/bill.js' %}"></script>
 {% endblock %}

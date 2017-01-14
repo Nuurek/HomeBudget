@@ -1,4 +1,4 @@
-from django.forms import Select, TextInput, NumberInput
+from django.forms import Select, TextInput, NumberInput, CheckboxInput
 
 
 def get_purchase_widgets():
@@ -12,10 +12,32 @@ def get_purchase_widgets():
         'ilosc_produktu': NumberInput(attrs=attrs),
     }
 
+
 def get_purchase_labels():
     return {
         'nazwa_produktu': "Nazwa",
         'kategorie_zakupu_id': "Kategoria",
         'cena_jednostkowa': "Cena",
         'ilosc_produktu': "Ilość",
+    }
+
+
+def get_categories_widgets():
+    attrs = {
+        'class': 'form-control',
+    }
+    return {
+        'nazwa': TextInput(attrs={
+            'class': 'form-control',
+        }),
+        'czy_opcjonalny': CheckboxInput(attrs={
+            'class': '',
+        }),
+    }
+
+
+def get_categories_labels():
+    return {
+        'nazwa': "Nazwa",
+        'czy_opcjonalny': "Czy opcjonalne?",
     }
