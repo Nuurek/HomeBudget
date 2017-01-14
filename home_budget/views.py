@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.contrib import messages
 import json
 from collections import defaultdict
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Count
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
@@ -123,7 +123,6 @@ class BillListView(ListView):
             ).annotate(total=Sum(
                 F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
             ))
-        print(queryset)
         return queryset
 
 
@@ -164,7 +163,13 @@ class BrandListView(ListView):
     template_name = "brands.html"
 
     model = SieciSklepow
-    
+
+    def get_queryset(self):
+        queryset = SieciSklepow.objects.all().annotate(
+            shops_count=Count('sklepy')
+        )
+        return queryset
+
 
 class ShopListView(ListView):
     pass
