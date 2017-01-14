@@ -50,8 +50,8 @@ function setUpElements() {
 (function($){
     setUpDatePicker();
     setUpElements();
-    setUpFormset({
+    var formset = new Formset({
         "formsetID": "bill-records",
         "errorMessage": "Paragon musi zawierać co najmniej jeden zakup.",
-    })
+    });
 })(jQuery);

@@ -24,49 +24,70 @@ function showErrorMessage(message) {
 }
 
 
-function setUpFormset(config) {
-    var formsetID = config['formsetID'];
-    var formsID = config['formsID'] || 'forms';
-    var addButtonID = config['addFormID'] || 'add-form';
-    var removeButtonClass = config['removeFormClass'] || 'remove-form';
-    var minimumNumberOfForms = config['minForms'] || 1;
-    var errorMessage = config['errorMessage'];
+class Formset {
+    constructor(config) {
+        this.formsetID = config['formsetID'];
+        this.formsID = config['formsID'] || 'forms';
+        this.addButtonID = config['addFormID'] || 'add-form';
+        this.removeButtonClass = config['removeFormClass'] || 'remove-form';
+        this.minimumNumberOfForms = config['minForms'] || 1;
+        this.errorMessage = config['errorMessage'];
 
-    var forms = $('#' + formsID);
+        this.forms = $('#' + this.formsID);
 
-    var formToClone = $(forms.children()[0]).clone();
-    $(formToClone).find('input').attr('value', '');
-    $(formToClone).find('option').attr('selected', false);
-    $(formToClone).find('select, input').prop('disabled', '');
 
-    var addFormButton = $('#' + addButtonID);
 
-    var addForm = function() {
-        var newForm = formToClone.clone();
-        newForm.hide()
-        forms.append(newForm);
-        newForm.show('fast');
-        renumberRows();
+        $('.' + this.removeButtonClass).click(this, this.removeFormClick);
+
+        this.formToClone = $(this.forms.children()[0]).clone(true, true);
+        $(this.formToClone).find('input').attr('value', '');
+        $(this.formToClone).find('option').attr('selected', false);
+        $(this.formToClone).find('select, input').prop('disabled', '');
+
+
+
+        this.addFormButton = $('#' + this.addButtonID);
+
+
+        this.addFormButton.click(this, this.addFormClick);
+
+        //$('.' + this.removeButtonClass).click(this, this.removeFormClick);
+        //var f = this.forms.on('click', '.' + this.removeButtonClass, this.removeFormClick);
     }
 
+    addForm() {
+        var newForm = this.formToClone.clone(true, true);
+        newForm.hide()
+        this.forms.append(newForm);
+        newForm.show('fast');
+        this.renumberRows();
+    }
 
-    var removeForm = function() {
-        var numberOfRows = forms.children().length;
-        if (numberOfRows > minimumNumberOfForms) {
-            var rowSelector = '#' + formsID + " >";
-            var row = $(this).parents(rowSelector);
+    addFormClick(event) {
+        event.data.addForm(event.data);
+    }
+
+    removeForm(self, event) {
+        var numberOfRows = self.forms.children().length;
+        if (numberOfRows > self.minimumNumberOfForms) {
+            var rowSelector = '#' + this.formsID + " >";
+            var row = $(event.target).parents(rowSelector);
             row.hide('fast', function(){
                 row.remove();
-                renumberRows();
+                self.renumberRows();
             });
         } else {
-            showErrorMessage(errorMessage);
+            showErrorMessage(this.errorMessage);
         }
     }
 
+    removeFormClick(event) {
+        console.log(event);
+        event.data.removeForm(event.data, event);
+    }
 
-    function renumberRows() {
-        var allRows = forms.children();
+    renumberRows() {
+        var allRows = this.forms.children();
 
         var numberOfRows = allRows.length;
 
@@ -83,9 +104,6 @@ function setUpFormset(config) {
 
         $('input[id$="TOTAL_FORMS"]').attr('value', numberOfRows);
     }
-
-    addFormButton.click(addForm);
-    var f = forms.on('click', '.' + removeButtonClass, removeForm);
 }
 
 (function($){
