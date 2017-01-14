@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div id="bill-records-rows">
+        <div id="forms">
         {% for form in purchase_formset %}
             <div class="row">
                 {{form.id}}
@@ -67,7 +67,7 @@
                     {{form.ilosc_produktu}}
                 </div>
                 <div class="col-md-1 form-group">
-                    <button type="button" class="btn btn-warning remove-bill-record">
+                    <button type="button" class="btn btn-warning remove-form">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </div>
@@ -76,7 +76,7 @@
         </div>
 
         <div class="form-group">
-            <button id="add-bill-record" type="button" class="btn btn-info" disabled>
+            <button id="add-form" type="button" class="btn btn-info" disabled>
                 <span class="glyphicon glyphicon-plus"></span>
             </button>
         </div>

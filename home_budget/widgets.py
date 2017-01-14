@@ -4,6 +4,7 @@ from django.forms import Select, TextInput, NumberInput, CheckboxInput
 def get_purchase_widgets():
     attrs = {
         'class': 'form-control',
+        'required': 'required',
     }
     return {
         'nazwa_produktu': TextInput(attrs=attrs),
