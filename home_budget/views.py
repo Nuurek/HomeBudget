@@ -170,6 +170,14 @@ class BrandListView(ListView):
         )
         return queryset
 
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        brand_name = request.POST['brand-name']
+
+        SieciSklepow.objects.create(nazwa=brand_name)
+
+        return HttpResponseRedirect(reverse('brands'))
+
 
 class ShopListView(ListView):
     pass

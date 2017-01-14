@@ -17,7 +17,7 @@
             </ul>
         </div>
 
-        <form class="text-center" action="index.html" method="post">
+        <form class="text-center" method="post"> {% csrf_token %}
             <div class="panel">
                 <h3 class="panel-heading">
                     Dodaj sieć sklepów
@@ -26,10 +26,10 @@
             <div class="panel-body">
                 <div class="form-group">
                     <div class="row">
-                        <label for="name">Nazwa</label>
+                        <label for="brand-name">Nazwa</label>
                     </div>
                     <div class="row">
-                        <input class="form-control" type="text" name="name" value="">
+                        <input class="form-control" type="text" name="brand-name" id="brand-name" value="">
                     </div>
                 </div>
                 <div class="form-group">
