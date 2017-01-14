@@ -26,33 +26,43 @@ function showErrorMessage(message) {
 
 class Formset {
     constructor(config) {
+        this.readConfig(config);
+
+        this.formset = $('#' + this.formsetID);
+        this.forms = $('#' + this.formsID);
+
+        this.prepareClone();
+
+        var initialRows = this.forms.children();
+        initialRows.attr('initial', true);
+        this.numberOfInitials = initialRows.length;
+    }
+
+    readConfig(config) {
         this.formsetID = config['formsetID'];
         this.formsID = config['formsID'] || 'forms';
         this.addButtonID = config['addFormID'] || 'add-form';
         this.removeButtonClass = config['removeFormClass'] || 'remove-form';
         this.minimumNumberOfForms = config['minForms'] || 1;
         this.errorMessage = config['errorMessage'];
+    }
 
-        this.forms = $('#' + this.formsID);
-
-
-
+    prepareClone() {
         $('.' + this.removeButtonClass).click(this, this.removeFormClick);
 
-        this.formToClone = $(this.forms.children()[0]).clone(true, true);
-        $(this.formToClone).find('input').attr('value', '');
-        $(this.formToClone).find('option').attr('selected', false);
-        $(this.formToClone).find('select, input').prop('disabled', '');
-
-
+        this.formToClone = this.getFormPrototype();
 
         this.addFormButton = $('#' + this.addButtonID);
-
-
         this.addFormButton.click(this, this.addFormClick);
+    }
 
-        //$('.' + this.removeButtonClass).click(this, this.removeFormClick);
-        //var f = this.forms.on('click', '.' + this.removeButtonClass, this.removeFormClick);
+    getFormPrototype() {
+        var formToClone = $(this.forms.children()[0]).clone(true, true);
+        $(formToClone).find('input').attr('value', '');
+        $(formToClone).find('option').attr('selected', false);
+        $(formToClone).find('select, input').prop('disabled', '');
+
+        return formToClone;
     }
 
     addForm() {
@@ -68,13 +78,35 @@ class Formset {
     }
 
     removeForm(self, event) {
-        var numberOfRows = self.forms.children().length;
-        if (numberOfRows > self.minimumNumberOfForms) {
+        var numberOfRowsAfterUpdate = self.forms.children().filter(':not([hidden])').length;;
+        if (numberOfRowsAfterUpdate > self.minimumNumberOfForms) {
             var rowSelector = '#' + this.formsID + " >";
             var row = $(event.target).parents(rowSelector);
-            row.hide('fast', function(){
-                row.remove();
-                self.renumberRows();
+            var isInitialRow = row.attr('initial');
+            var hiddenRowCallback = function() {};
+            if (isInitialRow) {
+                hiddenRowCallback = function() {
+                    row.attr('hidden', true);
+                    var id = $(row.find('input')).attr('id');
+                    var index = id.lastIndexOf('-');
+                    var deleteAttr = id.substring(0, index + 1);
+                    deleteAttr += "DELETE";
+                    var deleteInput = $('<input>').attr({
+                        type: 'hidden',
+                        id: deleteAttr,
+                        name: deleteAttr,
+                        value: 'on',
+                    });
+                    deleteInput.appendTo(self.formset);
+                };
+            } else {
+                hiddenRowCallback = function() {
+                    row.remove();
+                    self.renumberRows();
+                };
+            }
+            row.hide('fast', function() {
+                hiddenRowCallback();
             });
         } else {
             showErrorMessage(this.errorMessage);
@@ -82,7 +114,6 @@ class Formset {
     }
 
     removeFormClick(event) {
-        console.log(event);
         event.data.removeForm(event.data, event);
     }
 
@@ -91,7 +122,7 @@ class Formset {
 
         var numberOfRows = allRows.length;
 
-        for (var index = 0; index < numberOfRows; index++) {
+        for (var index = this.numberOfInitials; index < numberOfRows; index++) {
             var inputs = $(allRows[index]).find("[id^='id_']");
             inputs.each(function(){
                 var input = $(this)
