@@ -60,7 +60,7 @@ class Formset {
         var formToClone = $(this.forms.children()[0]).clone(true, true);
         $(formToClone).find('input').attr('value', '');
         $(formToClone).find('option').attr('selected', false);
-        $(formToClone).find('select, input').prop('disabled', '');
+        $(formToClone).find('select, input, button').prop('disabled', '');
 
         return formToClone;
     }

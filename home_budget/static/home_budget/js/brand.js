@@ -1,5 +1,5 @@
 function setUpBrandName() {
-    var brandName = $('#brand-name');
+    var brandName = $('#id_nazwa');
     var editButton = $('#brand-name-edit');
     var icon = $(editButton.find('span'));
 

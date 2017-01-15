@@ -7,7 +7,7 @@
         <div class="row">
             <ul class="list-group">
                 {% for brand in object_list %}
-                <a href="#" class="list-group-item">
+                <a href="{% url 'brand' brand_name=brand.nazwa %}" class="list-group-item">
                     {{ brand.nazwa }}
                     <span class="badge">
                         {{ brand.shops_count }}

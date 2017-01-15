@@ -66,11 +66,3 @@
 {% block scripts %}
     <script src="{% static 'home_budget/js/categories.js' %}"></script>
 {% endblock %}
-
-{% block messages %}
-    <script type="text/javascript">
-        {% for message in messages %}
-            showErrorMessage("{{ message }}");
-        {% endfor %}
-    </script>
-{% endblock %}

@@ -5,17 +5,18 @@
 {% block header %}
 <div class="row">
     <div class="form-group input-group-lg col-md-6 col-md-offset-3 has-success">
-        <strong><input id="brand-name" class="form-control input-lg text-center" type="text" name="" value="{{ brand_name }}" disabled></strong>
+        <strong>{{ brand_form }}<strong>
     </div>
 </div>
 {% endblock %}
 {% block content %}
+<form action="" method="post"> {% csrf_token %}
     <div class="row form-group">
         <div class="col-md-2 col-md-offset-5 form-group text-center">
             <button id="brand-name-edit" type="button" class="btn btn-info remove-form">
                 <span class="glyphicon glyphicon-edit"></span>
             </button>
-            <button type="button" class="btn btn-danger remove-form">
+            <button type="submit" class="btn btn-danger remove-form" formmethod="post" name="delete_brand" value="true">
                 <span class="glyphicon glyphicon-remove"></span>
             </button>
         </div>
@@ -45,6 +46,8 @@
         <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Zapisz{% endblock %}">
         </input>
     </div>
+</form>
+
 {% endblock %}
 
 {% block scripts %}

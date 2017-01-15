@@ -61,7 +61,15 @@
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block scripts %}{% endblock %}
-    {% block messages %}{% endblock %}
+
+
+    {% block messages %}
+        <script type="text/javascript">
+            {% for message in messages %}
+                showErrorMessage("{{ message }}");
+            {% endfor %}
+        </script>
+    {% endblock %}
 </body>
 
 </html>

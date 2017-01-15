@@ -15,5 +15,9 @@ urlpatterns = [
     ),
     url(r'^categories/$', CategoryListView.as_view(), name='categories'),
     url(r'^brands/$', BrandListView.as_view(), name='brands'),
-    url(r'^brands/(?P<brand_name>.+)', BrandDetailView.as_view(), name='shop'),
+    url(
+        r'^brands/(?P<brand_name>.+)',
+        BrandDetailView.as_view(),
+        name='brand'
+    ),
 ]

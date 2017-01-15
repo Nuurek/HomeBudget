@@ -10,7 +10,7 @@ from django.db.models import F, Sum, Count
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
     BillForm, ShopForm, PurchaseFormSet, PurchaseRetrieveFormSet,
-    CategoryFormSet, ShopFormSet
+    CategoryFormSet, BrandForm, ShopFormSet
 )
 
 
@@ -184,34 +184,48 @@ class BrandDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         brand_name = self.kwargs['brand_name']
         brand = SieciSklepow.objects.get(nazwa=brand_name)
+        brand_form = BrandForm(instance=brand)
         brand_shops = ShopFormSet(
             instance=brand,
             queryset=Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
         )
 
         context = {
-            "brand_name": brand_name,
+            "brand_form": brand_form,
             "brand_shops": brand_shops,
         }
 
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        formset = CategoryFormSet(data=request.POST)
+        brand_name = self.kwargs['brand_name']
+        brand = SieciSklepow.objects.get(nazwa=brand_name)
+
+        brand_form = BrandForm(data=request.POST, instance=brand)
+        brand_shops = ShopFormSet(
+            # data=request.POST,
+            instance=brand,
+            queryset=Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
+        )
 
         context = {
-            'formset': formset
+            "brand_form": brand_form,
+            "brand_shops": brand_shops,
         }
 
-        if formset.is_valid():
+        print(request.POST)
+        if request.POST['delete_brand'] == 'true':
+            print("Deleting")
             try:
-                formset.save()
+                brand.delete()
+                print("Deleted")
             except IntegrityError as error:
+                print("Can't delete ORA")
                 message = messages.error(
                     request,
-                    'Jedna z kategorii posiada przypisane zakupy.'
+                    'Sieć posiada stworzone sklepy.'
                 )
                 return self.render_to_response(context)
-            return HttpResponseRedirect(reverse('categories'))
+            return HttpResponseRedirect(reverse('brands'))
         else:
-            return self.render_to_response(context)
+            pass

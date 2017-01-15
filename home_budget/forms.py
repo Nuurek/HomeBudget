@@ -1,5 +1,5 @@
 from django.forms import (
-    ModelForm, ModelChoiceField, DateField, Select, TextInput
+    ModelForm, ModelChoiceField, DateField, Select, TextInput, CharField
 )
 from django.forms import (
     formset_factory, inlineformset_factory, modelformset_factory
@@ -72,6 +72,23 @@ CategoryFormSet = modelformset_factory(
     widgets=get_categories_widgets(),
     labels=get_categories_labels(),
 )
+
+
+class BrandForm(ModelForm):
+
+    class Meta:
+        model = SieciSklepow
+        fields = ('nazwa',)
+
+    nazwa = CharField(
+        label="",
+        label_suffix='',
+        widget=TextInput(attrs={
+            'class': 'form-control input-lg text-center',
+            'disabled': '',
+        })
+    )
+
 
 ShopFormSet = inlineformset_factory(
     SieciSklepow, Sklepy,
