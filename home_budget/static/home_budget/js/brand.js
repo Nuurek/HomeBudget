@@ -28,4 +28,9 @@ function setUpBrandName() {
 
 (function($){
     setUpBrandName();
+
+    var formset = new Formset({
+        "formsetID": "shops-formset",
+        "minForms": "0",
+    });
 })(jQuery);
