@@ -26,9 +26,6 @@ def get_purchase_labels():
 
 
 def get_categories_widgets():
-    attrs = {
-        'class': 'form-control',
-    }
     return {
         'nazwa': TextInput(attrs={
             'class': 'form-control',

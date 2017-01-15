@@ -92,7 +92,7 @@ class BrandForm(ModelForm):
 
 ShopFormSet = inlineformset_factory(
     SieciSklepow, Sklepy,
-    exclude=(),
+    fields=('id', 'adres'),
     can_delete=True,
     extra=1,
     widgets=get_shops_widgets(),

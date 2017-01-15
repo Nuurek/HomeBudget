@@ -223,11 +223,13 @@ class BrandDetailView(TemplateView):
         brand_name = self.kwargs['brand_name']
         brand = SieciSklepow.objects.get(nazwa=brand_name)
 
-        brand_form = BrandForm(instance=brand)
+        brand_form = BrandForm(data=request.POST)
+
+        brand_shops = Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
         brand_shops_formset = ShopFormSet(
             data=request.POST,
             instance=brand,
-            queryset=Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
+            queryset=brand_shops
         )
 
         context = {
@@ -258,9 +260,10 @@ class BrandDetailView(TemplateView):
                 )
                 return HttpResponseRedirect(reverse('brands'))
         else:
-            for brand_shop_form in brand_shops_formset:
-                print(brand_shop_form)
-            print("Is valid: ", brand_shops_formset.is_valid())
-            brand_shops = brand_shops_formset.save()
-            print(brand_shops)
+            if brand_form.is_valid():
+                new_brand = brand_form.save()
+                for shop in brand_shops:
+                    shop.sieci_sklepow_nazwa = new_brand
+                    shop.save()
+                brand.delete()
             return self.render_to_response(context)
