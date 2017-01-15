@@ -266,19 +266,16 @@ class BrandDetailView(TemplateView):
                 )
                 return HttpResponseRedirect(reverse('brands'))
         else:
-            for key, value in request.POST.items():
-                print(key, ": ", value)
-            print("Valid: ", brand_shops_formset.is_valid())
-            new_brand_shops = brand_shops_formset.save(commit=False)
-            for shop in new_brand_shops:
-                shop.sieci_sklepow_nazwa = new_brand
+            new_brand_shops = brand_shops_formset.save()
 
-            if brand_form.is_valid():
-                new_brand = brand_form.save()
-                for shop in brand_shops:
-                    shop.sieci_sklepow_nazwa = new_brand
-                    shop.save()
-                brand.delete()
+            if request.POST['nazwa'] != brand_name:
+                if brand_form.is_valid():
+                    new_brand = brand_form.save()
+                    for shop in brand_shops:
+                        shop.sieci_sklepow_nazwa = new_brand
+                        shop.save()
+                    brand.delete()
+                    brand_name = new_brand.nazwa
 
             return HttpResponseRedirect(reverse(
                 "brand",

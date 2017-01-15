@@ -87,7 +87,7 @@ class BrandForm(ModelForm):
         label_suffix='',
         widget=TextInput(attrs={
             'class': 'form-control input-lg text-center',
-            'disabled': '',
+            'readonly': '',
         })
     )
 
