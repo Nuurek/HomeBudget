@@ -94,6 +94,6 @@ ShopFormSet = inlineformset_factory(
     SieciSklepow, Sklepy,
     exclude=(),
     can_delete=True,
-    extra=0,
+    extra=1,
     widgets=get_shops_widgets(),
 )

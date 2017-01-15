@@ -52,4 +52,5 @@ def get_shops_widgets():
         'adres': TextInput(attrs={
             'class': 'form-control',
         }),
+        'id': HiddenInput(),
     }

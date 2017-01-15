@@ -42,7 +42,8 @@ class SieciSklepow(models.Model):
 
 
 class Sklepy(models.Model):
-    adres = models.CharField(primary_key=True, max_length=60)
+    id = models.IntegerField(primary_key=True)
+    adres = models.CharField(max_length=60)
     sieci_sklepow_nazwa = models.ForeignKey(
         SieciSklepow, models.DO_NOTHING, db_column='sieci_sklepow_nazwa')
 
