@@ -144,7 +144,10 @@ class CategoryListView(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        formset = CategoryFormSet(data=request.POST)
+        formset = CategoryFormSet(
+            data=request.POST,
+            queryset=KategorieZakupu.objects.all()
+        )
 
         context = {
             'formset': formset
@@ -181,9 +184,16 @@ class BrandListView(ListView):
         try:
             SieciSklepow.objects.create(nazwa=brand_name)
         except IntegrityError as error:
+            error_code = str(error).partition(':')[0].partition('-')[2]
+
+            error_messages = {
+                "01400": "Sieć sklepów musi posiadać nazwę.",
+                "00001": "Sieć sklepów o podanej nazwie już istnieje.",
+            }
+
             messages.error(
                 request,
-                'Sieć o podanej nazwie już istnieje.'
+                error_messages[error_code]
             )
             return HttpResponseRedirect(reverse('brands'))
         else:
@@ -272,10 +282,8 @@ class BrandDetailView(TemplateView):
 
     def change_brand_name(self, request):
         if request.POST['nazwa'] != self.brand_name:
-            print("Different names")
             print(self.brand_form)
             if self.brand_form.is_valid():
-                print("Valid")
                 new_brand = self.brand_form.save()
                 for shop in self.brand_shops:
                     shop.sieci_sklepow_nazwa = new_brand

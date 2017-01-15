@@ -68,7 +68,7 @@ class PurchaseRetrieveFormSet(PurchaseFormSet):
 
 CategoryFormSet = modelformset_factory(
     KategorieZakupu,
-    fields=('id', 'nazwa', 'czy_opcjonalny',),
+    fields=('nazwa', 'czy_opcjonalny',),
     extra=0,
     can_delete=True,
     widgets=get_categories_widgets(),

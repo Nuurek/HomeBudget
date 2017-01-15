@@ -25,26 +25,29 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        </button>
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="/">Budżet domowy</a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a href="/">Zakupy</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bill_create' %}">Dodaj Paragon</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Zakupy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'brands' %}">Sklepy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'categories' %}">Kategorie</a>
                     </li>
                     <li>
-                        <a href="{% url 'brands' %}">Sklepy</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'categories' %}">Kategorie</a>
-                    </li>
-                    <li>
-                        <a href="">Statystyki</a>
+                        <a class="nav-link" href="">Statystyki</a>
                     </li>
                 </ul>
             </div>
