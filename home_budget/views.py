@@ -173,9 +173,25 @@ class BrandListView(ListView):
     def post(self, request, *args, **kwargs):
         brand_name = request.POST['brand-name']
 
-        SieciSklepow.objects.create(nazwa=brand_name)
-
-        return HttpResponseRedirect(reverse('brands'))
+        try:
+            SieciSklepow.objects.create(nazwa=brand_name)
+        except IntegrityError as error:
+            messages.error(
+                request,
+                'Sieć o podanej nazwie już istnieje.'
+            )
+            return HttpResponseRedirect(reverse('brands'))
+        else:
+            messages.success(
+                request,
+                "Sieć sklepów " + brand_name + " została stworzona."
+            )
+            return HttpResponseRedirect(reverse(
+                "brand",
+                kwargs={
+                    "brand_name": brand_name,
+                }
+            ))
 
 
 class BrandDetailView(TemplateView):
@@ -201,7 +217,7 @@ class BrandDetailView(TemplateView):
         brand_name = self.kwargs['brand_name']
         brand = SieciSklepow.objects.get(nazwa=brand_name)
 
-        brand_form = BrandForm(data=request.POST, instance=brand)
+        brand_form = BrandForm(instance=brand)
         brand_shops = ShopFormSet(
             # data=request.POST,
             instance=brand,
@@ -218,14 +234,17 @@ class BrandDetailView(TemplateView):
             print("Deleting")
             try:
                 brand.delete()
-                print("Deleted")
             except IntegrityError as error:
-                print("Can't delete ORA")
-                message = messages.error(
+                messages.error(
                     request,
                     'Sieć posiada stworzone sklepy.'
                 )
                 return self.render_to_response(context)
-            return HttpResponseRedirect(reverse('brands'))
+            else:
+                messages.success(
+                    request,
+                    'Sieć sklepów ' + brand_name + ' została pomyślnie usunięta.'
+                )
+                return HttpResponseRedirect(reverse('brands'))
         else:
             pass

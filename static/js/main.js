@@ -1,9 +1,18 @@
+showModalMessage.djangoToBootstrap = {
+    debug: "info",
+    info: "info",
+    success: "success",
+    warning: "warning",
+    error: "danger",
+}
+
 function showModalMessage(message, type="info", timeout=2000) {
     var modal = $('#infoModal');
 
     var modalMessage = modal.find("#modalMessage");
+
     modalMessage.removeClass("alert-success alert-info alert-warning alert-danger");
-    modalMessage.addClass("alert-" + type);
+    modalMessage.addClass("alert-" + showModalMessage.djangoToBootstrap[type]);
 
     var modalMessageText = modalMessage.find("strong");
     modalMessageText.text(message);
