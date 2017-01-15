@@ -16,8 +16,9 @@ class KategorieZakupu(models.Model):
 
 class Paragony(models.Model):
     czas_zakupu = models.DateField()
-    sklepy_adres = models.ForeignKey(
-        'Sklepy', models.DO_NOTHING, db_column='sklepy_adres')
+    sklepy_id = models.ForeignKey(
+        'Sklepy', models.DO_NOTHING, db_column='sklepy_id'
+    )
     # id = models.FloatField(primary_key=True)
 
     class Meta:
@@ -42,7 +43,7 @@ class SieciSklepow(models.Model):
 
 
 class Sklepy(models.Model):
-    id = models.IntegerField(primary_key=True)
+    # id = models.IntegerField(primary_key=True)
     adres = models.CharField(max_length=60)
     sieci_sklepow_nazwa = models.ForeignKey(
         SieciSklepow, models.DO_NOTHING, db_column='sieci_sklepow_nazwa')

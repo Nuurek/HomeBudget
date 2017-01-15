@@ -36,15 +36,16 @@ class BillCreateView(TemplateView):
 
     def post(self, request, bill=None, *args, **kwargs):
         bill_form = BillForm(data=request.POST, instance=bill)
-
         purchase_formset = PurchaseFormSet(
             data=request.POST,
             instance=bill,
             queryset=Zakupy.objects.filter(paragony=bill)
         )
-
+        print("Bill form: \n", bill_form.is_valid(), "\n", bill_form)
+        print("\nFormset: ", purchase_formset.is_valid())
         if bill_form.is_valid() and purchase_formset.is_valid():
             if bill is None:
+                print(bill_form.data)
                 bill = bill_form.save()
 
             purchases = purchase_formset.save(commit=False)
@@ -69,13 +70,17 @@ class BillCreateView(TemplateView):
         return self.render_to_response(context)
 
     def _get_shops(self):
-        shops = Sklepy.objects.all().values('sieci_sklepow_nazwa', 'adres') \
+        shops = Sklepy.objects.all() \
+                        .values('sieci_sklepow_nazwa', 'id', 'adres') \
                         .order_by('sieci_sklepow_nazwa', 'adres')
 
         brands_shops = defaultdict(list)
         for shop in shops:
             brand = shop['sieci_sklepow_nazwa']
-            brands_shops[brand].append(shop['adres'])
+            brands_shops[brand].append({
+                'id': shop['id'],
+                'address': shop['adres']
+            })
 
         return json.dumps(brands_shops)
 
@@ -91,11 +96,11 @@ class BillDetailView(BillCreateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         bill = Paragony.objects.get(id=pk)
-        shop = bill.sklepy_adres
-        brand = shop.sieci_sklepow_nazwa
+        shop = Sklepy.objects.get(id=bill.sklepy_id.id)
+        brand = shop.adres
         initial_bill_data = {}
-        initial_bill_data['brand'] = brand
-        initial_bill_data['sklepy_adres'] = shop
+        initial_bill_data['brand'] = shop.sieci_sklepow_nazwa
+        initial_bill_data['sklepy_adres'] = shop.adres
 
         return super(BillDetailView, self).get(
             request, bill=bill, initial_bill_data=initial_bill_data,
@@ -117,9 +122,9 @@ class BillListView(ListView):
     def get_queryset(self):
         queryset = Paragony.objects.all().values(
             'id',
-            'sklepy_adres',
+            'sklepy_id__adres',
             'czas_zakupu',
-            'sklepy_adres__sieci_sklepow_nazwa'
+            'sklepy_id__sieci_sklepow_nazwa'
             ).annotate(total=Sum(
                 F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
             ))
@@ -256,14 +261,28 @@ class BrandDetailView(TemplateView):
             else:
                 messages.success(
                     request,
-                    'Sieć sklepów ' + brand_name + ' została pomyślnie usunięta.'
+                    'Sieć sklepów ' + brand_name +
+                    ' została pomyślnie usunięta.'
                 )
                 return HttpResponseRedirect(reverse('brands'))
         else:
+            for key, value in request.POST.items():
+                print(key, ": ", value)
+            print("Valid: ", brand_shops_formset.is_valid())
+            new_brand_shops = brand_shops_formset.save(commit=False)
+            for shop in new_brand_shops:
+                shop.sieci_sklepow_nazwa = new_brand
+
             if brand_form.is_valid():
                 new_brand = brand_form.save()
                 for shop in brand_shops:
                     shop.sieci_sklepow_nazwa = new_brand
                     shop.save()
                 brand.delete()
-            return self.render_to_response(context)
+
+            return HttpResponseRedirect(reverse(
+                "brand",
+                kwargs={
+                    "brand_name": brand_name,
+                }
+            ))

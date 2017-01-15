@@ -15,7 +15,7 @@
                         <a href="{% url 'bill_detail' bill.id %}" class="list-group-item">
                             <div class="row">
                                 <div class="col-md-11">
-                                    {{ bill.sklepy_adres__sieci_sklepow_nazwa }}, {{ bill.sklepy_adres }}
+                                    {{ bill.sklepy_id__sieci_sklepow_nazwa }}, {{ bill.sklepy_id__adres }}
                                 </div>
                                 <div class="col-md-1">
                                     <strong>{{ bill.total }} zł</strong>

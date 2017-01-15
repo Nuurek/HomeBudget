@@ -50,4 +50,5 @@ def get_shops_widgets():
             'class': 'form-control',
         }),
         'id': HiddenInput(),
+        'sieci_sklepow_nazwa': HiddenInput(),
     }

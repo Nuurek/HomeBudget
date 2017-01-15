@@ -15,7 +15,7 @@ function showModalMessage(message, type="info", timeout=2000) {
     modalMessage.addClass("alert-" + showModalMessage.djangoToBootstrap[type]);
 
     var modalMessageText = modalMessage.find("strong");
-    modalMessage.html(message);
+    modalMessageText.html(message);
 
     if (timeout > 0) {
         modal.on('show.bs.modal', function(){
@@ -31,7 +31,7 @@ function showModalMessage(message, type="info", timeout=2000) {
 }
 
 function showErrorMessage(message) {
-    showModalMessage(message, "danger");
+    showModalMessage(message, "error");
 }
 
 
@@ -69,7 +69,7 @@ class Formset {
 
     getFormPrototype() {
         var formToClone = $(this.forms.children()[0]).clone(true, true);
-        $(formToClone).find('input').attr('value', '');
+        $(formToClone).find('input').filter(':not([hidden])').attr('value', '');
         $(formToClone).find('option').attr('selected', false);
         $(formToClone).find('select, input, button').prop('disabled', '');
 

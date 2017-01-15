@@ -13,7 +13,7 @@ function setUpDatePicker() {
 function setUpElements() {
     var createBillForm = $('#create-bill-form');
     var brandSelect = $('#id_brand')[0];
-    var shopSelect = $('#id_sklepy_adres')[0];
+    var shopSelect = $('#id_sklepy_id')[0];
 
     var disabledInputs = $(createBillForm).find('select, input, button').slice(2);
 
@@ -35,7 +35,7 @@ function setUpElements() {
 
         $(shopSelect).find('option').remove();
         $.each(brandShops, function(index, shop){
-            shopSelect.append(new Option(shop, shop));
+            shopSelect.append(new Option(shop['address'], shop['id']));
         });
 
         checkForErrorAndDisable();
@@ -52,6 +52,6 @@ function setUpElements() {
     setUpElements();
     var formset = new Formset({
         "formsetID": "bill-records",
-        "errorMessage": "Paragon musi zawierać co najmniej jeden zakup.",
+        "errorMessage": "<strong>Paragon musi zawierać co najmniej jeden zakup.<strong>",
     });
 })(jQuery);

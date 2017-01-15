@@ -27,7 +27,8 @@ class BillForm(ModelForm):
             'class': 'form-control',
         })
     )
-    sklepy_adres = ModelChoiceField(
+
+    sklepy_id = ModelChoiceField(
         queryset=Sklepy.objects.all(),
         label="Sklep",
         label_suffix='',
@@ -35,6 +36,7 @@ class BillForm(ModelForm):
             'class': 'form-control',
         })
     )
+
     czas_zakupu = DateField(
         input_formats=['%d/%m/%Y'],
         label="Data zakupu",
@@ -92,8 +94,8 @@ class BrandForm(ModelForm):
 
 ShopFormSet = inlineformset_factory(
     SieciSklepow, Sklepy,
-    fields=('id', 'adres'),
+    exclude=(),
     can_delete=True,
-    extra=1,
+    extra=0,
     widgets=get_shops_widgets(),
 )
