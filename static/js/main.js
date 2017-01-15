@@ -15,7 +15,7 @@ function showModalMessage(message, type="info", timeout=2000) {
     modalMessage.addClass("alert-" + showModalMessage.djangoToBootstrap[type]);
 
     var modalMessageText = modalMessage.find("strong");
-    modalMessageText.html(message);
+    modalMessage.html(message);
 
     if (timeout > 0) {
         modal.on('show.bs.modal', function(){

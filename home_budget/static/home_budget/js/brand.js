@@ -22,7 +22,7 @@ function setUpBrandName() {
 
     removeButton.click(function() {
         console.log("Remove!");
-        showModalMessage(confirmMessage.html(), 'error', -1);
+        showModalMessage(confirmMessage.html(), 'error', 10000);
     });
 }
 

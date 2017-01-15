@@ -218,26 +218,32 @@ class BrandDetailView(TemplateView):
         brand = SieciSklepow.objects.get(nazwa=brand_name)
 
         brand_form = BrandForm(instance=brand)
-        brand_shops = ShopFormSet(
-            # data=request.POST,
+        brand_shops_formset = ShopFormSet(
+            data=request.POST,
             instance=brand,
             queryset=Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
         )
 
         context = {
             "brand_form": brand_form,
-            "brand_shops": brand_shops,
+            "brand_shops": brand_shops_formset,
         }
 
-        print(request.POST)
+        if brand_shops_formset.is_valid:
+            brand_shops = brand_shops_formset.save()
+
         if request.POST['delete_brand']:
             try:
+                for shop in brand_shops:
+                    print("Deleting: ", shop)
+                    shop.delete()
                 brand.delete()
             except IntegrityError as error:
+                print(error)
                 messages.error(
                     request,
                     "Nie można usunąć sieci " + brand_name +
-                    ". Sieć posiada stworzone sklepy."
+                    ". Do jednego ze sklepów jest przypisany zakup."
                 )
                 return self.render_to_response(context)
             else:

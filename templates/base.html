@@ -66,7 +66,7 @@
     {% block messages %}
         <script type="text/javascript">
             {% for message in messages %}
-                showModalMessage("{{ message }}", "{{ message.tags }}");
+                showModalMessage("<strong>" + "{{ message }}" + "<strong>", "{{ message.tags }}", 3000);
             {% endfor %}
         </script>
     {% endblock %}
