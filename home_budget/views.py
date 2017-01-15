@@ -225,61 +225,67 @@ class BrandDetailView(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        brand_name = self.kwargs['brand_name']
-        brand = SieciSklepow.objects.get(nazwa=brand_name)
+        self.brand_name = self.kwargs['brand_name']
+        self.brand = SieciSklepow.objects.get(nazwa=self.brand_name)
 
-        brand_form = BrandForm(data=request.POST)
+        self.brand_form = BrandForm(data=request.POST)
 
-        brand_shops = Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
-        brand_shops_formset = ShopFormSet(
+        self.brand_shops = Sklepy.objects.filter(sieci_sklepow_nazwa=self.brand)
+        self.brand_shops_formset = ShopFormSet(
             data=request.POST,
-            instance=brand,
-            queryset=brand_shops
+            instance=self.brand,
+            queryset=self.brand_shops
         )
 
-        context = {
-            "brand_form": brand_form,
-            "brand_shops": brand_shops_formset,
-        }
-
         if "delete_brand" in request.POST:
-            try:
-                brand_shops = Sklepy.objects.filter(
-                    sieci_sklepow_nazwa=brand_name
-                )
-                for shop in brand_shops:
-                    shop.delete()
-                brand.delete()
-            except IntegrityError as error:
-                print(error)
-                messages.error(
-                    request,
-                    "Nie można usunąć sieci " + brand_name +
-                    ". Do jednego ze sklepów jest przypisany zakup."
-                )
-                return self.render_to_response(context)
-            else:
-                messages.success(
-                    request,
-                    'Sieć sklepów ' + brand_name +
-                    ' została pomyślnie usunięta.'
-                )
-                return HttpResponseRedirect(reverse('brands'))
+            return self.delete_brand(request)
         else:
-            new_brand_shops = brand_shops_formset.save()
+            if self.brand_shops_formset.is_valid():
+                new_brand_shops = self.brand_shops_formset.save()
 
-            if request.POST['nazwa'] != brand_name:
-                if brand_form.is_valid():
-                    new_brand = brand_form.save()
-                    for shop in brand_shops:
-                        shop.sieci_sklepow_nazwa = new_brand
-                        shop.save()
-                    brand.delete()
-                    brand_name = new_brand.nazwa
+            return self.change_brand_name(request)
 
+    def delete_brand(self, request):
+        try:
+            for shop in self.brand_shops:
+                shop.delete()
+            self.brand.delete()
+        except IntegrityError as error:
+            messages.error(
+                request,
+                "Nie można usunąć sieci " + self.brand_name +
+                ". Do jednego ze sklepów jest przypisany zakup."
+            )
             return HttpResponseRedirect(reverse(
                 "brand",
                 kwargs={
-                    "brand_name": brand_name,
+                    "brand_name": self.brand_name,
                 }
             ))
+        else:
+            messages.success(
+                request,
+                'Sieć sklepów ' + self.brand_name +
+                ' została pomyślnie usunięta.'
+            )
+            return HttpResponseRedirect(reverse('brands'))
+
+    def change_brand_name(self, request):
+        if request.POST['nazwa'] != self.brand_name:
+            print("Different names")
+            print(self.brand_form)
+            if self.brand_form.is_valid():
+                print("Valid")
+                new_brand = self.brand_form.save()
+                for shop in self.brand_shops:
+                    shop.sieci_sklepow_nazwa = new_brand
+                    shop.save()
+                self.brand.delete()
+                self.brand_name = new_brand.nazwa
+
+        return HttpResponseRedirect(reverse(
+            "brand",
+            kwargs={
+                "brand_name": self.brand_name,
+            }
+        ))
