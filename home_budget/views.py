@@ -229,13 +229,12 @@ class BrandDetailView(TemplateView):
             "brand_shops": brand_shops_formset,
         }
 
-        if brand_shops_formset.is_valid:
-            brand_shops = brand_shops_formset.save()
-
         if request.POST['delete_brand']:
             try:
+                brand_shops = Sklepy.objects.filter(
+                    sieci_sklepow_nazwa=brand_name
+                )
                 for shop in brand_shops:
-                    print("Deleting: ", shop)
                     shop.delete()
                 brand.delete()
             except IntegrityError as error:
