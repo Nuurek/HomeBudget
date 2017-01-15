@@ -230,14 +230,14 @@ class BrandDetailView(TemplateView):
         }
 
         print(request.POST)
-        if request.POST['delete_brand'] == 'true':
-            print("Deleting")
+        if request.POST['delete_brand']:
             try:
                 brand.delete()
             except IntegrityError as error:
                 messages.error(
                     request,
-                    'Sieć posiada stworzone sklepy.'
+                    "Nie można usunąć sieci " + brand_name +
+                    ". Sieć posiada stworzone sklepy."
                 )
                 return self.render_to_response(context)
             else:

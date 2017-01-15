@@ -15,15 +15,17 @@ function showModalMessage(message, type="info", timeout=2000) {
     modalMessage.addClass("alert-" + showModalMessage.djangoToBootstrap[type]);
 
     var modalMessageText = modalMessage.find("strong");
-    modalMessageText.text(message);
+    modalMessageText.html(message);
 
-    modal.on('show.bs.modal', function(){
-        var modal = $(this);
-        clearTimeout(modal.data('hideInterval'));
-        modal.data('hideInterval', setTimeout(function(){
-            modal.modal('hide');
-        }, timeout));
-    });
+    if (timeout > 0) {
+        modal.on('show.bs.modal', function(){
+            var modal = $(this);
+            clearTimeout(modal.data('hideInterval'));
+            modal.data('hideInterval', setTimeout(function(){
+                modal.modal('hide');
+            }, timeout));
+        });
+    }
 
     modal.modal();
 }
