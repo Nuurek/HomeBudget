@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.db.models import F, Sum, Count
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import calendar
 from collections import defaultdict
 
@@ -352,9 +352,67 @@ class StatisticsView(TemplateView):
     template_name = "statistics.html"
 
     def get(self, request, *args, **kwargs):
-        current_year = date.today().year
-        current_month = date.today().month
-        _, last_day_in_month = calendar.monthrange(current_year, current_month)
+        start_date, end_date = self._get_date_range(request=request)
+
+        daily_expenses = Paragony.objects.values(
+            'czas_zakupu',
+        ).filter(czas_zakupu__range=(
+            start_date,
+            end_date
+        )).annotate(total=Sum(
+            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+        )).order_by('-czas_zakupu')
+
+        must_have_expenses = Paragony.objects.values(
+            'czas_zakupu',
+        ).filter(czas_zakupu__range=(
+            start_date,
+            end_date
+        )).filter(
+            zakupy__kategorie_zakupu_id__czy_opcjonalny=False
+        ).annotate(total=Sum(
+            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+        )).order_by('-czas_zakupu')
+
+        optional_expenses = Paragony.objects.values(
+            'czas_zakupu',
+        ).filter(czas_zakupu__range=(
+            start_date,
+            end_date
+        )).filter(
+            zakupy__kategorie_zakupu_id__czy_opcjonalny=True
+        ).annotate(total=Sum(
+            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+        )).order_by('-czas_zakupu')
+
+        must_have_sum = self._get_sum_of_expenses(must_have_expenses)
+        optional_sum = self._get_sum_of_expenses(optional_expenses)
+        total_sum = must_have_sum + optional_sum
+
+        grouped_json_expenses = self._get_grouped_json_expenses(
+            must_have_expenses,
+            optional_expenses
+        )
+
+        context = {
+            "daily_expenses": grouped_json_expenses,
+            "total_sum": total_sum,
+            "must_have_sum": must_have_sum,
+            "optional_sum": optional_sum,
+            "start_date": json.dumps(start_date.strftime("%Y-%m-%d")),
+            "end_date": json.dumps(end_date.strftime("%Y-%m-%d")),
+        }
+
+        return self.render_to_response(context)
+
+    def _get_date_range(self, request):
+        try:
+            end_date = datetime.strptime(
+                request.GET.get('end-date'),
+                "%d.%m.%Y"
+            )
+        except:
+            end_date = datetime.now()
 
         try:
             start_date = datetime.strptime(
@@ -362,67 +420,35 @@ class StatisticsView(TemplateView):
                 "%d.%m.%Y"
             )
         except:
-            start_date = date(current_year, current_month, 1)
+            start_date = end_date - timedelta(days=30)
 
-        try:
-            end_date = datetime.strptime(
-                request.GET.get('end-date'),
-                "%d.%m.%Y"
-            )
-        except:
-            end_date = date(
-                current_year,
-                current_month,
-                last_day_in_month
-            )
+        return start_date, end_date
 
-        must_have_expenses = self._get_daily_must_have_expenses(
-            start_date, end_date
-        )
-        optional_expenses = self._get_daily_optional_expenses(
-            start_date, end_date
-        )
-        daily_expenses = must_have_expenses + optional_expenses
-
-        context = {
-            "daily_expenses": json.dumps(daily_expenses),
-            "start_date": json.dumps(start_date.strftime("%Y-%m-%d")),
-            "end_date": json.dumps(end_date.strftime("%Y-%m-%d")),
-        }
-
-        return self.render_to_response(context)
-
-    def _get_daily_expenses(self):
-        return Paragony.objects.all().values(
-            'czas_zakupu',
-        ).annotate(total=Sum(
+    def _count_total_sum(self, queryset):
+        return queryset.annotate(total=Sum(
             F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
         )).order_by('-czas_zakupu')
 
-    def _get_daily_must_have_expenses(self, start_date, end_date):
-        queryset = self._get_daily_expenses_if_optional_or_not(
-            start_date, end_date, False
+    def _filter_expenses_by_optionality(self, queryset, optionality):
+        return queryset.filter(
+            zakupy__kategorie_zakupu_id__czy_opcjonalny=optionality
         )
-        return self._queryset_to_json_vis_group(queryset, 0)
 
-    def _get_daily_optional_expenses(self, start_date, end_date):
-        queryset = self._get_daily_expenses_if_optional_or_not(
-            start_date, end_date, True
-        )
-        return self._queryset_to_json_vis_group(queryset, 1)
-
-    def _get_daily_expenses_if_optional_or_not(self, start, end, value):
-        return Paragony.objects.all().values(
+    def _get_daily_expenses(self, start_date, end_date):
+        return Paragony.objects.values(
             'czas_zakupu',
         ).filter(czas_zakupu__range=(
-            start,
-            end
-        )).filter(
-            zakupy__kategorie_zakupu_id__czy_opcjonalny=value
-        ).annotate(total=Sum(
-            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by(
-            '-czas_zakupu'
+            start_date,
+            end_date
+        ))
+
+    def _get_sum_of_expenses(self, expenses):
+        return expenses.aggregate(sum=Sum('total'))['sum']
+
+    def _get_grouped_json_expenses(self, must_have, optional):
+        return json.dumps(
+            self._queryset_to_json_vis_group(must_have, 0) +
+            self._queryset_to_json_vis_group(optional, 1)
         )
 
     def _queryset_to_json_vis_group(self, queryset, group_id):

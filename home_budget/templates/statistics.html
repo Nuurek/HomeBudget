@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load static %}
+{% load static humanize %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
@@ -18,19 +18,19 @@
                 <div class="form-group">
                     <label for="id_czas_zakupu">Sumarycznie</label>
                     <div class="form-control">
-                        300zł
+                        {{ total_sum | floatformat:2 }} zł
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="id_czas_zakupu">Potrzebne wydatki</label>
                     <div class="form-control">
-                        200zł
+                        {{ must_have_sum | floatformat:2 }} zł
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="id_czas_zakupu">Opcjonalne wydatki</label>
                     <div class="form-control">
-                        100zł
+                        {{ optional_sum | floatformat:2 }} zł
                     </div>
                 </div>
                 <form class="form-group" method="GET" name="date-range">
