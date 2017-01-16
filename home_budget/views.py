@@ -3,9 +3,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib import messages
-import json
-from collections import defaultdict
 from django.db.models import F, Sum, Count
+import json
+from datetime import date, datetime
+import calendar
+from collections import defaultdict
 
 from .models import Paragony, SieciSklepow, Sklepy, KategorieZakupu, Zakupy
 from .forms import (
@@ -350,14 +352,42 @@ class StatisticsView(TemplateView):
     template_name = "statistics.html"
 
     def get(self, request, *args, **kwargs):
-        must_have_expenses = self._get_daily_must_have_expenses()
-        optional_expenses = self._get_daily_optional_expenses()
+        current_year = date.today().year
+        current_month = date.today().month
+        _, last_day_in_month = calendar.monthrange(current_year, current_month)
+
+        try:
+            start_date = datetime.strptime(
+                request.GET.get('start-date'),
+                "%d.%m.%Y"
+            )
+        except:
+            start_date = date(current_year, current_month, 1)
+
+        try:
+            end_date = datetime.strptime(
+                request.GET.get('end-date'),
+                "%d.%m.%Y"
+            )
+        except:
+            end_date = date(
+                current_year,
+                current_month,
+                last_day_in_month
+            )
+
+        must_have_expenses = self._get_daily_must_have_expenses(
+            start_date, end_date
+        )
+        optional_expenses = self._get_daily_optional_expenses(
+            start_date, end_date
+        )
         daily_expenses = must_have_expenses + optional_expenses
 
         context = {
             "daily_expenses": json.dumps(daily_expenses),
-            "start_date": json.dumps("2017-01-01"),
-            "end_date": json.dumps("2017-01-30"),
+            "start_date": json.dumps(start_date.strftime("%Y-%m-%d")),
+            "end_date": json.dumps(end_date.strftime("%Y-%m-%d")),
         }
 
         return self.render_to_response(context)
@@ -369,20 +399,31 @@ class StatisticsView(TemplateView):
             F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
         )).order_by('-czas_zakupu')
 
-    def _get_daily_must_have_expenses(self):
-        queryset = self._get_daily_expenses_if_optional_or_not(False)
+    def _get_daily_must_have_expenses(self, start_date, end_date):
+        queryset = self._get_daily_expenses_if_optional_or_not(
+            start_date, end_date, False
+        )
         return self._queryset_to_json_vis_group(queryset, 0)
 
-    def _get_daily_optional_expenses(self):
-        queryset = self._get_daily_expenses_if_optional_or_not(True)
+    def _get_daily_optional_expenses(self, start_date, end_date):
+        queryset = self._get_daily_expenses_if_optional_or_not(
+            start_date, end_date, True
+        )
         return self._queryset_to_json_vis_group(queryset, 1)
 
-    def _get_daily_expenses_if_optional_or_not(self, value):
+    def _get_daily_expenses_if_optional_or_not(self, start, end, value):
         return Paragony.objects.all().values(
             'czas_zakupu',
-        ).filter(zakupy__kategorie_zakupu_id__czy_opcjonalny=value).annotate(total=Sum(
+        ).filter(czas_zakupu__range=(
+            start,
+            end
+        )).filter(
+            zakupy__kategorie_zakupu_id__czy_opcjonalny=value
+        ).annotate(total=Sum(
             F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by('-czas_zakupu')
+        )).order_by(
+            '-czas_zakupu'
+        )
 
     def _queryset_to_json_vis_group(self, queryset, group_id):
         vis_group = [{

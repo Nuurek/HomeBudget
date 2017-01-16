@@ -42,7 +42,9 @@ function setUpDatePicker() {
     };
 
     $('#start-date').datepicker(options);
+    $('#start-date').datepicker('setDate', new Date(Date.parse(startDate)));
     $('#end-date').datepicker(options);
+    $('#end-date').datepicker('setDate', new Date(Date.parse(endDate)));
 }
 
 (function($){
