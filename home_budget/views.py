@@ -354,36 +354,15 @@ class StatisticsView(TemplateView):
     def get(self, request, *args, **kwargs):
         start_date, end_date = self._get_date_range(request=request)
 
-        daily_expenses = Paragony.objects.values(
-            'czas_zakupu',
-        ).filter(czas_zakupu__range=(
-            start_date,
-            end_date
-        )).annotate(total=Sum(
-            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by('-czas_zakupu')
+        daily_expenses = self._get_daily_expenses(start_date, end_date)
 
-        must_have_expenses = Paragony.objects.values(
-            'czas_zakupu',
-        ).filter(czas_zakupu__range=(
-            start_date,
-            end_date
-        )).filter(
-            zakupy__kategorie_zakupu_id__czy_opcjonalny=False
-        ).annotate(total=Sum(
-            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by('-czas_zakupu')
+        must_have_expenses = self._get_filtered_daily_expenses(
+            start_date, end_date, False
+        )
 
-        optional_expenses = Paragony.objects.values(
-            'czas_zakupu',
-        ).filter(czas_zakupu__range=(
-            start_date,
-            end_date
-        )).filter(
-            zakupy__kategorie_zakupu_id__czy_opcjonalny=True
-        ).annotate(total=Sum(
-            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by('-czas_zakupu')
+        optional_expenses = self._get_filtered_daily_expenses(
+            start_date, end_date, True
+        )
 
         must_have_sum = self._get_sum_of_expenses(must_have_expenses)
         optional_sum = self._get_sum_of_expenses(optional_expenses)
@@ -424,7 +403,16 @@ class StatisticsView(TemplateView):
 
         return start_date, end_date
 
-    def _count_total_sum(self, queryset):
+    def _get_daily_expenses(self, start_date, end_date):
+        queryset = self._get_daily_purchases(start_date, end_date)
+        return self._sum_daily_totals(queryset)
+
+    def _get_filtered_daily_expenses(self, start_date, end_date, optionality):
+        queryset = self._get_daily_purchases(start_date, end_date)
+        queryset = self._filter_expenses_by_optionality(queryset, optionality)
+        return self._sum_daily_totals(queryset)
+
+    def _sum_daily_totals(self, queryset):
         return queryset.annotate(total=Sum(
             F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
         )).order_by('-czas_zakupu')
@@ -434,7 +422,7 @@ class StatisticsView(TemplateView):
             zakupy__kategorie_zakupu_id__czy_opcjonalny=optionality
         )
 
-    def _get_daily_expenses(self, start_date, end_date):
+    def _get_daily_purchases(self, start_date, end_date):
         return Paragony.objects.values(
             'czas_zakupu',
         ).filter(czas_zakupu__range=(
