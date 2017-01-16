@@ -41,11 +41,9 @@ class BillCreateView(TemplateView):
             instance=bill,
             queryset=Zakupy.objects.filter(paragony=bill)
         )
-        print("Bill form: \n", bill_form.is_valid(), "\n", bill_form)
-        print("\nFormset: ", purchase_formset.is_valid())
+
         if bill_form.is_valid() and purchase_formset.is_valid():
             if bill is None:
-                print(bill_form.data)
                 bill = bill_form.save()
 
             purchases = purchase_formset.save(commit=False)
@@ -53,10 +51,22 @@ class BillCreateView(TemplateView):
                 purchase_for_deletion.delete()
             for purchase in purchases:
                 purchase.paragony = bill
-                purchase.save()
+                try:
+                    purchase.save()
+                except IntegrityError as error:
+                    messages.error(
+                        request,
+                        "Błędne dane zakupu!"
+                    )
 
-            pk = bill.id
-            return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
+            purchases = Zakupy.objects.filter(paragony=bill)
+
+            if len(purchases) > 0:
+                pk = bill.id
+                return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
+            else:
+                bill.delete()
+                return self.render_context(bill_form, purchase_formset)
 
         return self.render_context(bill_form, purchase_formset)
 
@@ -245,7 +255,9 @@ class BrandDetailView(TemplateView):
 
         self.brand_form = BrandForm(data=request.POST)
 
-        self.brand_shops = Sklepy.objects.filter(sieci_sklepow_nazwa=self.brand)
+        self.brand_shops = Sklepy.objects.filter(
+            sieci_sklepow_nazwa=self.brand
+        )
         self.brand_shops_formset = ShopFormSet(
             data=request.POST,
             instance=self.brand,
@@ -256,7 +268,25 @@ class BrandDetailView(TemplateView):
             return self.delete_brand(request)
         else:
             if self.brand_shops_formset.is_valid():
-                new_brand_shops = self.brand_shops_formset.save()
+                try:
+                    new_brand_shops = self.brand_shops_formset.save()
+                except:
+                    messages.error(
+                        request,
+                        "Nie można usunąć jednego ze sklepów ze względu " +
+                        "na istniejące paragony."
+                    )
+                    return HttpResponseRedirect(reverse(
+                        "brand",
+                        kwargs={
+                            "brand_name": self.brand_name,
+                        }
+                    ))
+
+                messages.success(
+                    request,
+                    "Sklepy zostały zaktualizowane."
+                )
 
             return self.change_brand_name(request)
 
@@ -286,7 +316,15 @@ class BrandDetailView(TemplateView):
             return HttpResponseRedirect(reverse('brands'))
 
     def change_brand_name(self, request):
-        if request.POST['nazwa'] != self.brand_name:
+        new_brand_name = request.POST['nazwa']
+
+        if new_brand_name == '':
+            messages.error(
+                request,
+                "Sieć sklepów musi posiadać nazwę."
+            )
+
+        if new_brand_name != self.brand_name:
             print(self.brand_form)
             if self.brand_form.is_valid():
                 new_brand = self.brand_form.save()
@@ -295,6 +333,10 @@ class BrandDetailView(TemplateView):
                     shop.save()
                 self.brand.delete()
                 self.brand_name = new_brand.nazwa
+                messages.success(
+                    request,
+                    "Nazwa sieci została zmieniona."
+                )
 
         return HttpResponseRedirect(reverse(
             "brand",
