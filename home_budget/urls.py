@@ -1,8 +1,8 @@
 from django.conf.urls import url
-from .views import (
-    BillCreateView, BillDetailView, BillListView, CategoryListView,
-    BrandListView, BrandDetailView, StatisticsView
-)
+from .views.bills import BillCreateView, BillDetailView, BillListView
+from .views.categories import CategoryListView
+from .views.brands import BrandListView, BrandDetailView
+from .views.statistics import StatisticsView
 
 
 urlpatterns = [

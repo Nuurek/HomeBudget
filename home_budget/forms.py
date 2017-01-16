@@ -51,12 +51,6 @@ class BillForm(ModelForm):
     )
 
 
-class ShopForm(ModelForm):
-
-    class Meta:
-        model = Sklepy
-        fields = ('adres', 'sieci_sklepow_nazwa')
-
 PurchaseFormSet = inlineformset_factory(
     Paragony, Zakupy,
     exclude=(), can_delete=True,
