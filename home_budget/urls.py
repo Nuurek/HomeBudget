@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import (
     BillCreateView, BillDetailView, BillListView, CategoryListView,
-    BrandListView, BrandDetailView
+    BrandListView, BrandDetailView, StatisticsView
 )
 
 
@@ -20,4 +20,5 @@ urlpatterns = [
         BrandDetailView.as_view(),
         name='brand'
     ),
+    url(r'^statistics/$', StatisticsView.as_view(), name='statistics'),
 ]

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static "css/vis.min.css" %}">
+{% endblock %}
+
+{% block content %}
+<div id="visualization"></div>
+<script type="text/javascript">
+var container = document.getElementById('visualization');
+var items = JSON.parse('{{ daily_expenses | escapejs }}');
+
+var dataset = new vis.DataSet(items);
+var options = {
+start: '2014-06-10',
+end: '2014-06-18'
+};
+var graph2d = new vis.Graph2d(container, dataset, options);
+</script>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/vis.min.js' %}"></script>
+{% endblock %}

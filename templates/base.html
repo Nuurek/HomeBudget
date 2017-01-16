@@ -13,6 +13,7 @@
 </head>
 
 <body>
+    {% block head_scripts %}{% endblock %}  
     {% block top-nav-wrapper %}
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
         <div class="modal-dialog modal-sm">
@@ -45,6 +46,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'categories' %}">Kategorie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'statistics' %}">Statystyki</a>
                     </li>
                 </ul>
             </div>

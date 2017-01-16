@@ -1,9 +1,11 @@
 from django.forms import (
-    ModelForm, ModelChoiceField, DateField, Select, TextInput, CharField
+    ModelForm, ModelChoiceField, DateField, Select, TextInput, CharField,
+    DateInput
 )
 from django.forms import (
     formset_factory, inlineformset_factory, modelformset_factory
 )
+from datetime import date
 
 from .models import Paragony, Zakupy, Sklepy, SieciSklepow, KategorieZakupu
 from .widgets import (
@@ -41,8 +43,10 @@ class BillForm(ModelForm):
         input_formats=['%d/%m/%Y'],
         label="Data zakupu",
         label_suffix='',
-        widget=TextInput(attrs={
+        initial=date.today,
+        widget=DateInput(attrs={
             'class': 'form-control',
+            'format': "%d/%m/%Y",
         })
     )
 

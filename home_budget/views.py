@@ -43,8 +43,11 @@ class BillCreateView(TemplateView):
         )
 
         if bill_form.is_valid() and purchase_formset.is_valid():
-            if bill is None:
-                bill = bill_form.save()
+            print("Bill form: ", bill_form)
+            for key, value in bill_form.cleaned_data.items():
+                print(key, ": ", value)
+            bill = bill_form.save()
+            print("Bill: ", bill)
 
             purchases = purchase_formset.save(commit=False)
             for purchase_for_deletion in purchase_formset.deleted_objects:
@@ -63,6 +66,7 @@ class BillCreateView(TemplateView):
 
             if len(purchases) > 0:
                 pk = bill.id
+                print("Bill again: ", bill)
                 return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
             else:
                 bill.delete()
@@ -137,7 +141,7 @@ class BillListView(ListView):
             'sklepy_id__sieci_sklepow_nazwa'
             ).annotate(total=Sum(
                 F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-            ))
+            )).order_by('-czas_zakupu')
         return queryset
 
 
@@ -273,8 +277,8 @@ class BrandDetailView(TemplateView):
                 except:
                     messages.error(
                         request,
-                        "Nie można usunąć jednego ze sklepów ze względu " +
-                        "na istniejące paragony."
+                        "Nie można usunąć jednego ze sklepów ze względu" +
+                        " na istniejące paragony."
                     )
                     return HttpResponseRedirect(reverse(
                         "brand",
@@ -344,3 +348,27 @@ class BrandDetailView(TemplateView):
                 "brand_name": self.brand_name,
             }
         ))
+
+
+class StatisticsView(TemplateView):
+    template_name = "statistics.html"
+
+    def get(self, request, *args, **kwargs):
+        daily_expenses = self._get_daily_expenses()
+        daily_expenses = [{
+            "date": expense["czas_zakupu"].strftime("%Y-%m-%d"),
+            "sum": expense["total"],
+            } for expense in daily_expenses]
+
+        context = {
+            "daily_expenses": json.dumps(daily_expenses)
+        }
+
+        return self.render_to_response(context)
+
+    def _get_daily_expenses(self):
+        return Paragony.objects.all().values(
+            'czas_zakupu',
+        ).annotate(total=Sum(
+            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+        )).order_by('-czas_zakupu')

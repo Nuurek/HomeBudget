@@ -27,7 +27,7 @@ class Paragony(models.Model):
 
     def __str__(self):
         name = self.czas_zakupu.strftime("%d-%m-%Y")
-        name += ' - ' + str(self.sklepy_adres)
+        name += ' - ' + str(self.sklepy_id)
         return name
 
 

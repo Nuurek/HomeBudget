@@ -1,13 +1,13 @@
 function setUpDatePicker() {
     $('#bill-date').datepicker({
-        format: "dd/mm/yyyy",
+        format: "dd.mm.yyyy",
         weekStart: 1,
         todayBtn: "linked",
         language: "pl",
         keyboardNavigation: false,
         todayHighlight: true
     });
-    $('#bill-date').datepicker('update', new Date());
+    //$('#bill-date').datepicker('update', new Date());
 }
 
 function setUpElements() {
