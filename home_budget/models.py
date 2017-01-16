@@ -58,7 +58,7 @@ class Sklepy(models.Model):
 
 class Zakupy(models.Model):
     # id = models.FloatField(primary_key=True)
-    nazwa_produktu = models.CharField(max_length=30)
+    nazwa_produktu = models.CharField(max_length=100)
     cena_jednostkowa = models.FloatField()
     ilosc_produktu = models.FloatField()
     kategorie_zakupu_id = models.ForeignKey(

@@ -43,11 +43,7 @@ class BillCreateView(TemplateView):
         )
 
         if bill_form.is_valid() and purchase_formset.is_valid():
-            print("Bill form: ", bill_form)
-            for key, value in bill_form.cleaned_data.items():
-                print(key, ": ", value)
             bill = bill_form.save()
-            print("Bill: ", bill)
 
             purchases = purchase_formset.save(commit=False)
             for purchase_for_deletion in purchase_formset.deleted_objects:
@@ -355,13 +351,18 @@ class StatisticsView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         daily_expenses = self._get_daily_expenses()
+        dates = [expense['czas_zakupu'].strftime("%Y-%m-%d") for expense in daily_expenses]
+        start_date = min(dates)
+        end_date = max(dates)
         daily_expenses = [{
-            "date": expense["czas_zakupu"].strftime("%Y-%m-%d"),
-            "sum": expense["total"],
+            "x": expense["czas_zakupu"].strftime("%Y-%m-%d"),
+            "y": expense["total"],
             } for expense in daily_expenses]
 
         context = {
-            "daily_expenses": json.dumps(daily_expenses)
+            "daily_expenses": json.dumps(daily_expenses),
+            "start_date": json.dumps(start_date),
+            "end_date": json.dumps(end_date),
         }
 
         return self.render_to_response(context)

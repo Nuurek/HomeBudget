@@ -40,13 +40,13 @@ class BillForm(ModelForm):
     )
 
     czas_zakupu = DateField(
-        input_formats=['%d/%m/%Y'],
+        input_formats=['%d.%m.%Y'],
         label="Data zakupu",
         label_suffix='',
         initial=date.today,
         widget=DateInput(attrs={
             'class': 'form-control',
-            'format': "%d/%m/%Y",
+            'format': "%d.%m.%Y",
         })
     )
 

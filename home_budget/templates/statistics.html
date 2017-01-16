@@ -7,20 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<div id="visualization"></div>
-<script type="text/javascript">
-var container = document.getElementById('visualization');
-var items = JSON.parse('{{ daily_expenses | escapejs }}');
-
-var dataset = new vis.DataSet(items);
-var options = {
-start: '2014-06-10',
-end: '2014-06-18'
-};
-var graph2d = new vis.Graph2d(container, dataset, options);
-</script>
+    <div id="visualization"></div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/vis.min.js' %}"></script>
+    <script type="text/javascript">
+        var visURL = "{% static 'js/vis.min.js' %}";
+        var items = JSON.parse('{{ daily_expenses | escapejs }}');
+        var startDate = JSON.parse('{{ start_date | escapejs }}');
+        var endDate = JSON.parse('{{ end_date | escapejs }}');
+    </script>
+    <script src="{% static 'home_budget/js/statistics.js' %}"></script>
 {% endblock %}
