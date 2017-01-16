@@ -350,19 +350,14 @@ class StatisticsView(TemplateView):
     template_name = "statistics.html"
 
     def get(self, request, *args, **kwargs):
-        daily_expenses = self._get_daily_expenses()
-        dates = [expense['czas_zakupu'].strftime("%Y-%m-%d") for expense in daily_expenses]
-        start_date = min(dates)
-        end_date = max(dates)
-        daily_expenses = [{
-            "x": expense["czas_zakupu"].strftime("%Y-%m-%d"),
-            "y": expense["total"],
-            } for expense in daily_expenses]
+        must_have_expenses = self._get_daily_must_have_expenses()
+        optional_expenses = self._get_daily_optional_expenses()
+        daily_expenses = must_have_expenses + optional_expenses
 
         context = {
             "daily_expenses": json.dumps(daily_expenses),
-            "start_date": json.dumps(start_date),
-            "end_date": json.dumps(end_date),
+            "start_date": json.dumps("2017-01-01"),
+            "end_date": json.dumps("2017-01-30"),
         }
 
         return self.render_to_response(context)
@@ -373,3 +368,27 @@ class StatisticsView(TemplateView):
         ).annotate(total=Sum(
             F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
         )).order_by('-czas_zakupu')
+
+    def _get_daily_must_have_expenses(self):
+        queryset = self._get_daily_expenses_if_optional_or_not(False)
+        return self._queryset_to_json_vis_group(queryset, 0)
+
+    def _get_daily_optional_expenses(self):
+        queryset = self._get_daily_expenses_if_optional_or_not(True)
+        return self._queryset_to_json_vis_group(queryset, 1)
+
+    def _get_daily_expenses_if_optional_or_not(self, value):
+        return Paragony.objects.all().values(
+            'czas_zakupu',
+        ).filter(zakupy__kategorie_zakupu_id__czy_opcjonalny=value).annotate(total=Sum(
+            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
+        )).order_by('-czas_zakupu')
+
+    def _queryset_to_json_vis_group(self, queryset, group_id):
+        vis_group = [{
+            "x": expense["czas_zakupu"].strftime("%Y-%m-%d"),
+            "y": expense["total"],
+            "group": group_id,
+        } for expense in queryset]
+
+        return vis_group

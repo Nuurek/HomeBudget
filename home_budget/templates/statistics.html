@@ -13,7 +13,7 @@
 {% block scripts %}
     <script type="text/javascript">
         var visURL = "{% static 'js/vis.min.js' %}";
-        var items = JSON.parse('{{ daily_expenses | escapejs }}');
+        var expenses = JSON.parse('{{ daily_expenses | escapejs }}');
         var startDate = JSON.parse('{{ start_date | escapejs }}');
         var endDate = JSON.parse('{{ end_date | escapejs }}');
     </script>
