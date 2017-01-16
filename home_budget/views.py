@@ -153,6 +153,11 @@ class CategoryListView(TemplateView):
             'formset': formset
         }
 
+        for key, value in request.POST.items():
+            print(key, ": ", value)
+        for form in formset:
+            print(form)
+            print("Valid? ", form.is_valid())
         if formset.is_valid():
             try:
                 formset.save()

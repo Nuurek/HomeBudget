@@ -33,7 +33,6 @@ def get_categories_widgets():
         'czy_opcjonalny': CheckboxInput(attrs={
             'class': '',
         }),
-        'id': HiddenInput(),
     }
 
 
