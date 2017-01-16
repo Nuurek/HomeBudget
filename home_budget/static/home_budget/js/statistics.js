@@ -31,8 +31,24 @@ function drawChart() {
     var Graph2d = new vis.Graph2d(container, dataset, options, groups);
 };
 
+function setUpDatePicker() {
+    var options = {
+        format: "dd.mm.yyyy",
+        weekStart: 1,
+        todayBtn: "linked",
+        language: "pl",
+        keyboardNavigation: false,
+        todayHighlight: true
+    };
+
+    $('#start-date').datepicker(options);
+    $('#end-date').datepicker(options);
+}
+
 (function($){
     $.getScript(visURL, function() {
         drawChart();
     });
+
+    setUpDatePicker();
 })(jQuery);

@@ -3,11 +3,57 @@
 {% load static %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
     <link rel="stylesheet" href="{% static "css/vis.min.css" %}">
 {% endblock %}
 
+{% block header %}{% endblock %}
 {% block content %}
-    <div id="visualization"></div>
+    <div class="panel">
+        <div class="panel-body row">
+            <div class="col-md-10">
+                <div id="visualization"></div>
+            </div>
+            <div class="col-md-2 form-group text-center">
+                <div class="form-group">
+                    <label for="id_czas_zakupu">Sumarycznie</label>
+                    <div class="form-control">
+                        300zł
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_czas_zakupu">Potrzebne wydatki</label>
+                    <div class="form-control">
+                        200zł
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_czas_zakupu">Opcjonalne wydatki</label>
+                    <div class="form-control">
+                        100zł
+                    </div>
+                </div>
+                <form class="form-group" method="GET">
+                    <div class="form-group">
+                        <div class="input-group input-daterange text-center" id="date-range">
+                            <label for="id_czas_zakupu">Od</label>
+                            <div class="form-group">
+                                <input id="start-date" type="text" class="form-control">
+                            </div>
+                            <label for="id_czas_zakupu">Do</label>
+                            <div class="form-group">
+                                <input id="end-date" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <input class="btn btn-lg btn-primary btn-block" type="button" name="button" value="Pokaż"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -17,5 +63,6 @@
         var startDate = JSON.parse('{{ start_date | escapejs }}');
         var endDate = JSON.parse('{{ end_date | escapejs }}');
     </script>
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'home_budget/js/statistics.js' %}"></script>
 {% endblock %}
