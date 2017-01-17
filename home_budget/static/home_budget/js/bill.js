@@ -30,25 +30,28 @@ function setUpElements() {
     }
 
     var onBrandSelectChange = function() {
-        var currentShopID = $(shopSelect).find(":selected")[0].value;
-
         var brand = brandSelect.value;
         var brandShops = shops[brand];
 
-        $(shopSelect).find('option:not(:selected)').remove();
+        $(shopSelect).find('option').remove();
         $.each(brandShops, function(index, shop){
-            if (shop['id'] != currentShopID) {
-                shopSelect.append(new Option(shop['address'], shop['id']));
-            }
+            shopSelect.append(new Option(shop['address'], shop['id']));
         });
 
         checkForErrorAndDisable();
     }
 
+    var currentBrand = $(brandSelect).find(':selected').val();
+    var currentShopID = $(shopSelect).find(':selected').val();
+
     onBrandSelectChange();
+
+    $(brandSelect).val(currentBrand);
+    $(shopSelect).val(currentShopID);
+
     $(brandSelect).change(onBrandSelectChange);
-    //$(brandSelect).select2();
-    //$(shopSelect).select2();
+    $(brandSelect).select2();
+    $(shopSelect).select2();
 
     checkForErrorAndDisable();
 }

@@ -4,16 +4,14 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib import messages
-from collections import defaultdict
-import json
 from datetime import datetime
 
 from ..models import Paragony, Zakupy, Sklepy
 from ..forms import BillForm, PurchaseFormSet
-from .common import DateRangeView
+from .common import DateRangeView, BillView
 
 
-class BillCreateView(TemplateView):
+class BillCreateView(TemplateView, BillView):
 
     template_name = "bill.html"
 
@@ -78,21 +76,6 @@ class BillCreateView(TemplateView):
 
         return self.render_to_response(context)
 
-    def _get_shops(self):
-        shops = Sklepy.objects.all() \
-                        .values('sieci_sklepow_nazwa', 'id', 'adres') \
-                        .order_by('sieci_sklepow_nazwa', 'adres')
-
-        brands_shops = defaultdict(list)
-        for shop in shops:
-            brand = shop['sieci_sklepow_nazwa']
-            brands_shops[brand].append({
-                'id': shop['id'],
-                'address': shop['adres']
-            })
-
-        return json.dumps(brands_shops)
-
 
 class BillDetailView(BillCreateView):
 
@@ -125,14 +108,19 @@ class BillDetailView(BillCreateView):
         )
 
 
-class BillListView(ListView, DateRangeView):
+class BillListView(ListView, DateRangeView, BillView):
     template_name = "bill_list.html"
 
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super(BillListView, self).get_context_data(**kwargs)
-        print("Context data")
+
+        context['start_date'] = self.start_date.strftime("%d.%m.%Y")
+        context['end_date'] = self.end_date.strftime("%d.%m.%Y")
+
+        context['shops'] = self._get_shops()
+
         return context
 
     def get_queryset(self):
