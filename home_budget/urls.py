@@ -6,7 +6,7 @@ from .views.statistics import StatisticsView
 
 
 urlpatterns = [
-    url(r'^$', BillListView.as_view(), name="home"),
+    url(r'^$', BillListView.as_view(is_form=False), name="home"),
     url(r'^bills/create/$', BillCreateView.as_view(), name='bill_create'),
     url(
         r'^bills/(?P<pk>[0-9]+)',

@@ -113,13 +113,17 @@ class BillListView(ListView, DateRangeView, BillView):
 
     paginate_by = 10
 
+    is_form = True
+
     def get_context_data(self, **kwargs):
         context = super(BillListView, self).get_context_data(**kwargs)
 
         context['start_date'] = self.start_date.strftime("%d.%m.%Y")
         context['end_date'] = self.end_date.strftime("%d.%m.%Y")
-        context['query'] = '&start-date=' + context['start_date'] + \
-            '&end-date=' + context['end_date']
+        context['is_form'] = self.is_form
+        if (self.is_form):
+            context['query'] = '&start-date=' + context['start_date'] + \
+                '&end-date=' + context['end_date']
         return context
 
     def get_queryset(self):
