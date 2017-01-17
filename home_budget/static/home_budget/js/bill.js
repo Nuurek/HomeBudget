@@ -43,6 +43,8 @@ function setUpElements() {
 
     onBrandSelectChange();
     $(brandSelect).change(onBrandSelectChange);
+    $(brandSelect).select2();
+    $(shopSelect).select2();
 
     checkForErrorAndDisable();
 }
