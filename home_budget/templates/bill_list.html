@@ -11,34 +11,19 @@
 {% block content %}
     <form class="row" method="GET">
         <div class="row form-group text-center">
-            <label for="" class="col-md-3">
+            <label for="" class="col-md-3 col-md-offset-3">
                 Od:
             </label>
             <label for="" class="col-md-3">
                 Do:
             </label>
-            <label for="" class="col-md-3">
-                Sieć sklepów:
-            </label>
-            <label for="" class="col-md-3">
-                Sklep:
-            </label>
         </div>
         <div class="row form-group">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-3 col-md-offset-3">
                 <input id="id_start_date" name="start-date" type="text" class="form-control text-center" value="{{ start_date }}">
             </div>
             <div class="form-group col-md-3">
                 <input id="id_end_date" name="end-date" type="text" class="form-control text-center" value="{{ end_date }}">
-            </div>
-            <div class="form-group col-md-3">
-                <input id="id_brand" name="brand" type="text" class="form-control">
-            </div>
-            <div class="form-group col-md-3">
-                <input id="id_shop_id" name="shop" type="text" class="form-control">
-                <script type="text/javascript">
-                    var shops = JSON.parse('{{ shops | escapejs }}');
-                </script>
             </div>
         </div>
         <div class="form-group text-center col-md-4 col-md-offset-4">
@@ -76,25 +61,25 @@
                 <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                     <a class="page-link"
                     {% if page_obj.has_previous %}
-                        href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}"
+                        href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}{{ query }}"
                     {% endif %}
                     tabindex="-1">Previous</a>
                 </li>
                 {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}{{ query }}">
                         {{ page_obj.number | add:"-1" }}
                     </a>
                 </li>
                 {% endif %}
                 <li class="page-item active">
-                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.number }}">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.number }}{{ query }}">
                         {{ page_obj.number }} <span class="sr-only">(current)</span>
                     </a>
                 </li>
                 {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}{{ query }}">
                         {{ page_obj.number | add:"+1" }}
                     </a>
                 </li>
@@ -102,7 +87,7 @@
                 <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                     <a class="page-link"
                     {% if page_obj.has_next %}
-                        href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}"
+                        href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}{{ query }}"
                     {% endif %}
                     tabindex="-1">Next</a>
                 </li>

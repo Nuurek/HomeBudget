@@ -118,9 +118,8 @@ class BillListView(ListView, DateRangeView, BillView):
 
         context['start_date'] = self.start_date.strftime("%d.%m.%Y")
         context['end_date'] = self.end_date.strftime("%d.%m.%Y")
-
-        context['shops'] = self._get_shops()
-
+        context['query'] = '&start-date=' + context['start_date'] + \
+            '&end-date=' + context['end_date']
         return context
 
     def get_queryset(self):
