@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    {% block head_scripts %}{% endblock %}  
+    {% block head_scripts %}{% endblock %}
     {% block top-nav-wrapper %}
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
         <div class="modal-dialog modal-sm">
@@ -39,7 +39,7 @@
                         <a class="nav-link" href="{% url 'bill_create' %}">Dodaj Paragon</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Zakupy</a>
+                        <a class="nav-link" href="{% url 'bill_list' %}">Zakupy</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'brands' %}">Sklepy</a>

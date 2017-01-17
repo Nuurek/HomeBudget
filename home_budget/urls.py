@@ -13,6 +13,7 @@ urlpatterns = [
         BillDetailView.as_view(),
         name='bill_detail'
     ),
+    url(r'^bills/', BillListView.as_view(), name="bill_list"),
     url(r'^categories/$', CategoryListView.as_view(), name='categories'),
     url(r'^brands/$', BrandListView.as_view(), name='brands'),
     url(

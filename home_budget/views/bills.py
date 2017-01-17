@@ -124,7 +124,9 @@ class BillDetailView(BillCreateView):
 
 
 class BillListView(ListView):
-    template_name = "home.html"
+    template_name = "bill_list.html"
+
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Paragony.objects.all().values(

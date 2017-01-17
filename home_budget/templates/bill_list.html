@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static humanize %}
+
+{% block content %}
+    <div id="bills=list">
+        <div class="panel list-group">
+            {% regroup object_list by czas_zakupu as days %}
+            {% for day in days %}
+                <a href="#" class="list-group-item list-group-item-info text-center display-1" data-toggle="collapse" data-target="#day-{{ day.grouper | slugify }}" data-parent="#bills-list">
+                    <strong>{{ day.grouper }}</strong>
+                </a>
+                <div id="day-{{ day.grouper | slugify }}" class="sublinks collapse in">
+                    {% for bill in day.list %}
+                        <a href="{% url 'bill_detail' bill.id %}" class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    {{ bill.sklepy_id__sieci_sklepow_nazwa }}, {{ bill.sklepy_id__adres }}
+                                </div>
+                                <div class="col-md-1">
+                                    <strong>{{ bill.total | floatformat:2 }} zł</strong>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav class="row text-center" aria-label="...">
+            <ul class="pagination">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    <a class="page-link"
+                    {% if page_obj.has_previous %}
+                        href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}"
+                    {% endif %}
+                    tabindex="-1">Previous</a>
+                </li>
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.previous_page_number }}">
+                        {{ page_obj.number | add:"-1" }}
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.number }}">
+                        {{ page_obj.number }} <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}">
+                        {{ page_obj.number | add:"+1" }}
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link"
+                    {% if page_obj.has_next %}
+                        href="{% url 'bill_list' %}?page={{ page_obj.next_page_number }}"
+                    {% endif %}
+                    tabindex="-1">Next</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+{% endblock %}
