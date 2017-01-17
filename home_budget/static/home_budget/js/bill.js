@@ -30,12 +30,16 @@ function setUpElements() {
     }
 
     var onBrandSelectChange = function() {
+        var currentShopID = $(shopSelect).find(":selected")[0].value;
+
         var brand = brandSelect.value;
         var brandShops = shops[brand];
 
-        $(shopSelect).find('option').remove();
+        $(shopSelect).find('option:not(:selected)').remove();
         $.each(brandShops, function(index, shop){
-            shopSelect.append(new Option(shop['address'], shop['id']));
+            if (shop['id'] != currentShopID) {
+                shopSelect.append(new Option(shop['address'], shop['id']));
+            }
         });
 
         checkForErrorAndDisable();
@@ -43,8 +47,8 @@ function setUpElements() {
 
     onBrandSelectChange();
     $(brandSelect).change(onBrandSelectChange);
-    $(brandSelect).select2();
-    $(shopSelect).select2();
+    //$(brandSelect).select2();
+    //$(shopSelect).select2();
 
     checkForErrorAndDisable();
 }
