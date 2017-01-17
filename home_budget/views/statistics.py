@@ -1,17 +1,19 @@
 from django.views.generic import TemplateView
 from django.db.models import F, Sum, Count
 import json
-from datetime import date, datetime, timedelta
 import calendar
 
 from ..models import Paragony
+from .common import DateRangeView
 
 
-class StatisticsView(TemplateView):
+class StatisticsView(TemplateView, DateRangeView):
     template_name = "statistics.html"
 
     def get(self, request, *args, **kwargs):
-        start_date, end_date = self._get_date_range(request=request)
+        start_date, end_date = self._get_date_range(
+            request, "start-date", "end-date", "%d.%m.%Y", 30
+        )
 
         daily_expenses = self._get_daily_expenses(start_date, end_date)
 
@@ -42,25 +44,6 @@ class StatisticsView(TemplateView):
         }
 
         return self.render_to_response(context)
-
-    def _get_date_range(self, request):
-        try:
-            end_date = datetime.strptime(
-                request.GET.get('end-date'),
-                "%d.%m.%Y"
-            )
-        except:
-            end_date = datetime.now()
-
-        try:
-            start_date = datetime.strptime(
-                request.GET.get('start-date'),
-                "%d.%m.%Y"
-            )
-        except:
-            start_date = end_date - timedelta(days=30)
-
-        return start_date, end_date
 
     def _get_daily_expenses(self, start_date, end_date):
         queryset = self._get_daily_purchases(start_date, end_date)

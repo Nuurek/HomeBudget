@@ -6,9 +6,11 @@ from django.db import IntegrityError
 from django.contrib import messages
 from collections import defaultdict
 import json
+from datetime import datetime
 
 from ..models import Paragony, Zakupy, Sklepy
 from ..forms import BillForm, PurchaseFormSet
+from .common import DateRangeView
 
 
 class BillCreateView(TemplateView):
@@ -123,18 +125,30 @@ class BillDetailView(BillCreateView):
         )
 
 
-class BillListView(ListView):
+class BillListView(ListView, DateRangeView):
     template_name = "bill_list.html"
 
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super(BillListView, self).get_context_data(**kwargs)
+        print("Context data")
+        return context
+
     def get_queryset(self):
+        self.start_date, self.end_date = self._get_date_range(
+            self.request, "start-date", "end-date", "%d.%m.%Y", 30
+        )
+
         queryset = Paragony.objects.all().values(
             'id',
             'sklepy_id__adres',
             'czas_zakupu',
             'sklepy_id__sieci_sklepow_nazwa'
-            ).annotate(total=Sum(
+            ).filter(czas_zakupu__range=(
+                self.start_date, self.end_date
+            )).annotate(total=Sum(
                 F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
             )).order_by('-czas_zakupu')
+
         return queryset

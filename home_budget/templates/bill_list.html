@@ -2,7 +2,47 @@
 
 {% load static humanize %}
 
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/select2.min.css" %}">
+{% endblock %}
+
 {% block content %}
+    <form class="row" method="GET">
+        <div class="row form-group text-center">
+            <label for="" class="col-md-3">
+                Od:
+            </label>
+            <label for="" class="col-md-3">
+                Do:
+            </label>
+            <label for="" class="col-md-3">
+                Sieć sklepów:
+            </label>
+            <label for="" class="col-md-3">
+                Sklep:
+            </label>
+        </div>
+        <div class="row form-group">
+            <div class="form-group col-md-3">
+                <input id="id_start_date" name="start-date" type="text" class="form-control text-center">
+            </div>
+            <div class="form-group col-md-3">
+                <input id="id_end_date" name="end-date" type="text" class="form-control text-center">
+            </div>
+            <div class="form-group col-md-3">
+                <input id="id_brand" name="brand" type="text" class="form-control">
+            </div>
+            <div class="form-group col-md-3">
+                <input id="id_shop_id" name="shop" type="text" class="form-control">
+            </div>
+        </div>
+        <div class="form-group text-center col-md-4 col-md-offset-4">
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Szukaj"></input>
+        </div>
+    </form>
+
     <div id="bills=list">
         <div class="panel list-group">
             {% regroup object_list by czas_zakupu as days %}
@@ -67,4 +107,11 @@
         </nav>
         {% endif %}
     </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/select2.min.js' %}"></script>
+    <script src="{% static 'home_budget/js/bill_list.js' %}"></script>
 {% endblock %}
