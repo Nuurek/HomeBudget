@@ -6,7 +6,7 @@ from django.contrib import messages
 
 
 from ..forms import CategoryFormSet
-from ..models import KategorieZakupu
+from ..models import ProductCategory
 
 
 class CategoryListView(TemplateView):
@@ -24,7 +24,7 @@ class CategoryListView(TemplateView):
     def post(self, request, *args, **kwargs):
         formset = CategoryFormSet(
             data=request.POST,
-            queryset=KategorieZakupu.objects.all()
+            queryset=ProductCategory.objects.all()
         )
 
         context = {

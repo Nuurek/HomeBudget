@@ -6,17 +6,17 @@ from django.db import IntegrityError
 from django.contrib import messages
 
 
-from ..models import SieciSklepow, Sklepy
+from ..models import Brand, Shop
 from ..forms import BrandForm, ShopFormSet
 
 
 class BrandListView(ListView):
     template_name = "brands.html"
 
-    model = SieciSklepow
+    model = Brand
 
     def get_queryset(self):
-        queryset = SieciSklepow.objects.all().annotate(
+        queryset = Brand.objects.all().annotate(
             shops_count=Count('sklepy')
         )
         return queryset
@@ -25,7 +25,7 @@ class BrandListView(ListView):
         brand_name = request.POST['brand-name']
 
         try:
-            SieciSklepow.objects.create(nazwa=brand_name)
+            Brand.objects.create(nazwa=brand_name)
         except IntegrityError as error:
             error_code = str(error).partition(':')[0].partition('-')[2]
 
@@ -57,9 +57,9 @@ class BrandDetailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         brand_name = self.kwargs['brand_name']
-        brand = SieciSklepow.objects.get(nazwa=brand_name)
+        brand = Brand.objects.get(nazwa=brand_name)
         brand_form = BrandForm(instance=brand)
-        brand_shops = Sklepy.objects.filter(sieci_sklepow_nazwa=brand)
+        brand_shops = Shop.objects.filter(sieci_sklepow_nazwa=brand)
         if len(brand_shops) == 0:
             ShopFormSet.extra = 1
         else:
@@ -79,11 +79,11 @@ class BrandDetailView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         self.brand_name = self.kwargs['brand_name']
-        self.brand = SieciSklepow.objects.get(nazwa=self.brand_name)
+        self.brand = Brand.objects.get(nazwa=self.brand_name)
 
         self.brand_form = BrandForm(data=request.POST)
 
-        self.brand_shops = Sklepy.objects.filter(
+        self.brand_shops = Shop.objects.filter(
             sieci_sklepow_nazwa=self.brand
         )
         self.brand_shops_formset = ShopFormSet(

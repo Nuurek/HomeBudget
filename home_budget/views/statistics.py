@@ -3,7 +3,7 @@ from django.db.models import F, Sum, Count
 import json
 import calendar
 
-from ..models import Paragony
+from ..models import Receipt
 from .common import DateRangeView
 
 
@@ -65,7 +65,7 @@ class StatisticsView(TemplateView, DateRangeView):
         )
 
     def _get_daily_purchases(self, start_date, end_date):
-        return Paragony.objects.values(
+        return Receipt.objects.values(
             'czas_zakupu',
         ).filter(czas_zakupu__range=(
             start_date,

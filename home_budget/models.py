@@ -1,75 +1,48 @@
 from django.db import models
+from djmoney.models.fields import MoneyField
 
 
-class KategorieZakupu(models.Model):
-    id = models.IntegerField(primary_key=True)
-    nazwa = models.CharField(max_length=30)
-    czy_opcjonalny = models.BooleanField()
-
-    class Meta:
-        managed = False
-        db_table = 'kategorie_zakupu'
+class Brand(models.Model):
+    name = models.CharField(max_length=64)
 
     def __str__(self):
-        return self.nazwa
+        return self.name
 
 
-class Paragony(models.Model):
-    czas_zakupu = models.DateField()
-    sklepy_id = models.ForeignKey(
-        'Sklepy', models.DO_NOTHING, db_column='sklepy_id'
-    )
-    # id = models.FloatField(primary_key=True)
-
-    class Meta:
-        managed = False
-        db_table = 'paragony'
+class Shop(models.Model):
+    address = models.CharField(max_length=128)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     def __str__(self):
-        name = self.czas_zakupu.strftime("%d-%m-%Y")
-        name += ' - ' + str(self.sklepy_id)
+        return self.address
+
+
+class Receipt(models.Model):
+    time_of_purchase = models.DateField()
+    shop = models.ForeignKey(Shop, on_delete=models.PROTECT)
+
+    def __str__(self):
+        name = self.time_of_purchase.strftime("%d-%m-%Y")
+        name += ' - ' + str(self.shop)
         return name
 
 
-class SieciSklepow(models.Model):
-    nazwa = models.CharField(primary_key=True, max_length=30)
-
-    class Meta:
-        managed = False
-        db_table = 'sieci_sklepow'
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=32)
+    is_optional = models.BooleanField()
 
     def __str__(self):
-        return self.nazwa
+        return self.name
 
 
-class Sklepy(models.Model):
-    # id = models.IntegerField(primary_key=True)
-    adres = models.CharField(max_length=60)
-    sieci_sklepow_nazwa = models.ForeignKey(
-        SieciSklepow, models.DO_NOTHING, db_column='sieci_sklepow_nazwa')
-
-    class Meta:
-        managed = False
-        db_table = 'sklepy'
+class Purchase(models.Model):
+    name = models.CharField(max_length=128)
+    unit_price = MoneyField(max_digits=8, decimal_places=2, default_currency="PLN")
+    amount = models.DecimalField(max_digits=16, decimal_places=3, default=1)
+    receipt = models.ForeignKey(Receipt, models.CASCADE)
+    product_category = models.ForeignKey(ProductCategory, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.adres
-
-
-class Zakupy(models.Model):
-    # id = models.FloatField(primary_key=True)
-    nazwa_produktu = models.CharField(max_length=100)
-    cena_jednostkowa = models.FloatField()
-    ilosc_produktu = models.FloatField()
-    kategorie_zakupu_id = models.ForeignKey(
-        KategorieZakupu, models.DO_NOTHING, db_column='kategorie_zakupu_id')
-    paragony = models.ForeignKey(Paragony, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'zakupy'
-
-    def __str__(self):
-        name = self.nazwa_produktu + ' '
+        name = self.name + ' '
         name += str(self.ilosc_produktu * float(self.cena_jednostkowa)) + 'zł'
         return name

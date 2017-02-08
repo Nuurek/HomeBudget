@@ -2,13 +2,13 @@ from datetime import date, datetime, timedelta
 from collections import defaultdict
 import json
 
-from ..models import Sklepy
+from ..models import Shop
 
 
 class BillView(object):
 
     def _get_shops(self):
-        shops = Sklepy.objects.all() \
+        shops = Shop.objects.all() \
                         .values('sieci_sklepow_nazwa', 'id', 'adres') \
                         .order_by('sieci_sklepow_nazwa', 'adres')
 

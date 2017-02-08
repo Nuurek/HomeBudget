@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib import messages
 from datetime import datetime
 
-from ..models import Paragony, Zakupy, Sklepy
+from ..models import Receipt, Purchase, Shop
 from ..forms import BillForm, PurchaseFormSet
 from .common import DateRangeView, BillView
 
@@ -26,7 +26,7 @@ class BillCreateView(TemplateView, BillView):
 
         purchase_formset = PurchaseFormSet(
             instance=bill,
-            queryset=Zakupy.objects.filter(paragony=bill)
+            queryset=Purchase.objects.filter(paragony=bill)
         )
 
         return self.render_context(bill_form, purchase_formset)
@@ -36,7 +36,7 @@ class BillCreateView(TemplateView, BillView):
         purchase_formset = PurchaseFormSet(
             data=request.POST,
             instance=bill,
-            queryset=Zakupy.objects.filter(paragony=bill)
+            queryset=Purchase.objects.filter(paragony=bill)
         )
 
         if bill_form.is_valid() and purchase_formset.is_valid():
@@ -55,7 +55,7 @@ class BillCreateView(TemplateView, BillView):
                         "Błędne dane zakupu!"
                     )
 
-            purchases = Zakupy.objects.filter(paragony=bill)
+            purchases = Purchase.objects.filter(paragony=bill)
 
             if len(purchases) > 0:
                 pk = bill.id
@@ -87,8 +87,8 @@ class BillDetailView(BillCreateView):
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
-        bill = Paragony.objects.get(id=pk)
-        shop = Sklepy.objects.get(id=bill.sklepy_id.id)
+        bill = Receipt.objects.get(id=pk)
+        shop = Shop.objects.get(id=bill.sklepy_id.id)
         brand = shop.adres
         initial_bill_data = {}
         initial_bill_data['brand'] = shop.sieci_sklepow_nazwa
@@ -101,7 +101,7 @@ class BillDetailView(BillCreateView):
 
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
-        bill = Paragony.objects.get(id=pk)
+        bill = Receipt.objects.get(id=pk)
 
         return super(BillDetailView, self).post(
             request, bill=bill, *args, **kwargs
@@ -131,7 +131,7 @@ class BillListView(ListView, DateRangeView, BillView):
             self.request, "start-date", "end-date", "%d.%m.%Y", 30
         )
 
-        queryset = Paragony.objects.all().values(
+        queryset = Receipt.objects.all().values(
             'id',
             'sklepy_id__adres',
             'czas_zakupu',

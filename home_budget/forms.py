@@ -7,7 +7,7 @@ from django.forms import (
 )
 from datetime import date
 
-from .models import Paragony, Zakupy, Sklepy, SieciSklepow, KategorieZakupu
+from .models import Receipt, Purchase, Shop, Brand, ProductCategory
 from .widgets import (
     get_purchase_widgets, get_purchase_labels,
     get_categories_widgets, get_categories_labels,
@@ -18,11 +18,11 @@ from .widgets import (
 class BillForm(ModelForm):
 
     class Meta:
-        model = Paragony
+        model = Receipt
         exclude = ()
 
     brand = ModelChoiceField(
-        queryset=SieciSklepow.objects.all(),
+        queryset=Brand.objects.all(),
         label="Sieć sklepów",
         label_suffix='',
         widget=Select(attrs={
@@ -31,7 +31,7 @@ class BillForm(ModelForm):
     )
 
     sklepy_id = ModelChoiceField(
-        queryset=Sklepy.objects.all(),
+        queryset=Shop.objects.all(),
         label="Sklep",
         label_suffix='',
         widget=Select(attrs={
@@ -52,7 +52,7 @@ class BillForm(ModelForm):
 
 
 PurchaseFormSet = inlineformset_factory(
-    Paragony, Zakupy,
+    Receipt, Purchase,
     exclude=(), can_delete=True,
     widgets=get_purchase_widgets(),
     labels=get_purchase_labels(),
@@ -65,8 +65,8 @@ class PurchaseRetrieveFormSet(PurchaseFormSet):
 
 
 CategoryFormSet = modelformset_factory(
-    KategorieZakupu,
-    fields=('nazwa', 'czy_opcjonalny',),
+    ProductCategory,
+    fields=("name", "is_optional",),
     extra=0,
     can_delete=True,
     widgets=get_categories_widgets(),
@@ -77,8 +77,8 @@ CategoryFormSet = modelformset_factory(
 class BrandForm(ModelForm):
 
     class Meta:
-        model = SieciSklepow
-        fields = ('nazwa',)
+        model = Brand
+        fields = ("name",)
 
     nazwa = CharField(
         label="",
@@ -91,7 +91,7 @@ class BrandForm(ModelForm):
 
 
 ShopFormSet = inlineformset_factory(
-    SieciSklepow, Sklepy,
+    Brand, Shop,
     exclude=(),
     can_delete=True,
     extra=0,
