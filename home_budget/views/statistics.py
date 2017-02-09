@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.db.models import F, Sum, Count
+from decimal import *
 import json
-import calendar
 
 from ..models import Receipt
 from .common import DateRangeView
@@ -25,8 +25,8 @@ class StatisticsView(TemplateView, DateRangeView):
             start_date, end_date, True
         )
 
-        must_have_sum = self._get_sum_of_expenses(must_have_expenses)
-        optional_sum = self._get_sum_of_expenses(optional_expenses)
+        must_have_sum = self._get_sum_of_expenses(must_have_expenses) or Decimal(0)
+        optional_sum = self._get_sum_of_expenses(optional_expenses) or Decimal(0)
         total_sum = must_have_sum + optional_sum
 
         grouped_json_expenses = self._get_grouped_json_expenses(
@@ -56,18 +56,18 @@ class StatisticsView(TemplateView, DateRangeView):
 
     def _sum_daily_totals(self, queryset):
         return queryset.annotate(total=Sum(
-            F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-        )).order_by('-czas_zakupu')
+            F('purchase__unit_price')*F('purchase__amount')
+        )).order_by('-time_of_purchase')
 
     def _filter_expenses_by_optionality(self, queryset, optionality):
         return queryset.filter(
-            zakupy__kategorie_zakupu_id__czy_opcjonalny=optionality
+            purchase__product_category__is_optional=optionality
         )
 
     def _get_daily_purchases(self, start_date, end_date):
         return Receipt.objects.values(
-            'czas_zakupu',
-        ).filter(czas_zakupu__range=(
+            'time_of_purchase',
+        ).filter(time_of_purchase__range=(
             start_date,
             end_date
         ))

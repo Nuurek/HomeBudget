@@ -17,11 +17,12 @@ class BrandListView(ListView):
 
     def get_queryset(self):
         queryset = Brand.objects.all().annotate(
-            shops_count=Count('sklepy')
+            shops_count=Count('shop')
         )
         return queryset
 
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request, *args, **kwargs):
         brand_name = request.POST['brand-name']
 
         try:

@@ -9,15 +9,15 @@ class BillView(object):
 
     def _get_shops(self):
         shops = Shop.objects.all() \
-                        .values('sieci_sklepow_nazwa', 'id', 'adres') \
-                        .order_by('sieci_sklepow_nazwa', 'adres')
+                        .values('brand__name', 'id', 'address') \
+                        .order_by('brand__name', 'address')
 
         brands_shops = defaultdict(list)
         for shop in shops:
-            brand = shop['sieci_sklepow_nazwa']
+            brand = shop['brand__name']
             brands_shops[brand].append({
                 'id': shop['id'],
-                'address': shop['adres']
+                'address': shop['address']
             })
 
         return json.dumps(brands_shops)

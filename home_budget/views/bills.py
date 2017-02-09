@@ -26,7 +26,7 @@ class BillCreateView(TemplateView, BillView):
 
         purchase_formset = PurchaseFormSet(
             instance=bill,
-            queryset=Purchase.objects.filter(paragony=bill)
+            queryset=Purchase.objects.filter(receipt=bill)
         )
 
         return self.render_context(bill_form, purchase_formset)
@@ -36,7 +36,7 @@ class BillCreateView(TemplateView, BillView):
         purchase_formset = PurchaseFormSet(
             data=request.POST,
             instance=bill,
-            queryset=Purchase.objects.filter(paragony=bill)
+            queryset=Purchase.objects.filter(receipt=bill)
         )
 
         if bill_form.is_valid() and purchase_formset.is_valid():
@@ -46,7 +46,7 @@ class BillCreateView(TemplateView, BillView):
             for purchase_for_deletion in purchase_formset.deleted_objects:
                 purchase_for_deletion.delete()
             for purchase in purchases:
-                purchase.paragony = bill
+                purchase.receipt = bill
                 try:
                     purchase.save()
                 except IntegrityError as error:
@@ -55,7 +55,7 @@ class BillCreateView(TemplateView, BillView):
                         "Błędne dane zakupu!"
                     )
 
-            purchases = Purchase.objects.filter(paragony=bill)
+            purchases = Purchase.objects.filter(receipt=bill)
 
             if len(purchases) > 0:
                 pk = bill.id
@@ -133,13 +133,13 @@ class BillListView(ListView, DateRangeView, BillView):
 
         queryset = Receipt.objects.all().values(
             'id',
-            'sklepy_id__adres',
-            'czas_zakupu',
-            'sklepy_id__sieci_sklepow_nazwa'
-            ).filter(czas_zakupu__range=(
+            'shop__address',
+            'time_of_purchase',
+            'shop__brand__name'
+            ).filter(time_of_purchase__range=(
                 self.start_date, self.end_date
             )).annotate(total=Sum(
-                F('zakupy__cena_jednostkowa')*F('zakupy__ilosc_produktu')
-            )).order_by('-czas_zakupu')
+                F('purchase__unit_price')*F('purchase__amount')
+            )).order_by('-time_of_purchase')
 
         return queryset
