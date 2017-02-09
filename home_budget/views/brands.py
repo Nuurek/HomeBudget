@@ -21,26 +21,13 @@ class BrandListView(ListView):
         )
         return queryset
 
-    @staticmethod
-    def post(request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         brand_name = request.POST['brand-name']
 
-        try:
-            Brand.objects.create(nazwa=brand_name)
-        except IntegrityError as error:
-            error_code = str(error).partition(':')[0].partition('-')[2]
+        brand_form = BrandForm(request.POST)
+        if brand_form.is_valid():
+            brand_form.save()
 
-            error_messages = {
-                "01400": "Sieć sklepów musi posiadać nazwę.",
-                "00001": "Sieć sklepów o podanej nazwie już istnieje.",
-            }
-
-            messages.error(
-                request,
-                error_messages[error_code]
-            )
-            return HttpResponseRedirect(reverse('brands'))
-        else:
             messages.success(
                 request,
                 "Sieć sklepów " + brand_name + " została stworzona."
@@ -51,6 +38,12 @@ class BrandListView(ListView):
                     "brand_name": brand_name,
                 }
             ))
+        else:
+            messages.error(
+                request,
+                "Sieć sklepów musi posiadać nazwę."
+            )
+            return HttpResponseRedirect(reverse('brands'))
 
 
 class BrandDetailView(TemplateView):
@@ -58,9 +51,9 @@ class BrandDetailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         brand_name = self.kwargs['brand_name']
-        brand = Brand.objects.get(nazwa=brand_name)
+        brand = Brand.objects.get(name=brand_name)
         brand_form = BrandForm(instance=brand)
-        brand_shops = Shop.objects.filter(sieci_sklepow_nazwa=brand)
+        brand_shops = Shop.objects.filter(brand=brand)
         if len(brand_shops) == 0:
             ShopFormSet.extra = 1
         else:
@@ -80,12 +73,12 @@ class BrandDetailView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         self.brand_name = self.kwargs['brand_name']
-        self.brand = Brand.objects.get(nazwa=self.brand_name)
+        self.brand = Brand.objects.get(name=self.brand_name)
 
         self.brand_form = BrandForm(data=request.POST)
 
         self.brand_shops = Shop.objects.filter(
-            sieci_sklepow_nazwa=self.brand
+            brand=self.brand
         )
         self.brand_shops_formset = ShopFormSet(
             data=request.POST,
@@ -145,7 +138,7 @@ class BrandDetailView(TemplateView):
             return HttpResponseRedirect(reverse('brands'))
 
     def change_brand_name(self, request):
-        new_brand_name = request.POST['nazwa']
+        new_brand_name = request.POST['name']
 
         if new_brand_name == '':
             messages.error(
@@ -158,10 +151,10 @@ class BrandDetailView(TemplateView):
             if self.brand_form.is_valid():
                 new_brand = self.brand_form.save()
                 for shop in self.brand_shops:
-                    shop.sieci_sklepow_nazwa = new_brand
+                    shop.brand = new_brand
                     shop.save()
                 self.brand.delete()
-                self.brand_name = new_brand.nazwa
+                self.brand_name = new_brand.name
                 messages.success(
                     request,
                     "Nazwa sieci została zmieniona."

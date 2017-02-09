@@ -45,9 +45,9 @@ def get_categories_labels():
 
 def get_shops_widgets():
     return {
-        'adres': TextInput(attrs={
+        'address': TextInput(attrs={
             'class': 'form-control',
         }),
         'id': HiddenInput(),
-        'sieci_sklepow_nazwa': HiddenInput(),
+        'brand': HiddenInput(),
     }

@@ -3,14 +3,14 @@ from djmoney.models.fields import MoneyField
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True, blank=False)
 
     def __str__(self):
         return self.name
 
 
 class Shop(models.Model):
-    address = models.CharField(max_length=128)
+    address = models.CharField(max_length=128, blank=False)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -28,7 +28,7 @@ class Receipt(models.Model):
 
 
 class ProductCategory(models.Model):
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=32, blank=False)
     is_optional = models.BooleanField()
 
     def __str__(self):
@@ -36,7 +36,7 @@ class ProductCategory(models.Model):
 
 
 class Purchase(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, blank=False)
     unit_price = MoneyField(max_digits=8, decimal_places=2, default_currency="PLN")
     amount = models.DecimalField(max_digits=16, decimal_places=3, default=1)
     receipt = models.ForeignKey(Receipt, models.CASCADE)

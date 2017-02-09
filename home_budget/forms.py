@@ -80,7 +80,7 @@ class BrandForm(ModelForm):
         model = Brand
         fields = ("name",)
 
-    nazwa = CharField(
+    name = CharField(
         label="",
         label_suffix='',
         widget=TextInput(attrs={

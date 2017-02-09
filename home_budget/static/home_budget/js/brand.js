@@ -1,5 +1,5 @@
 function setUpBrandName() {
-    var brandName = $('#id_nazwa');
+    var brandName = $('#id_name');
     var editButton = $('#brand-name-edit');
     var removeButton = $('#brand-delete-button');
     var confirmMessage = $('#brand-delete-confirm');
@@ -35,6 +35,6 @@ function setUpBrandName() {
 
     var formset = new Formset({
         "formsetID": "shops-formset",
-        "minForms": "0",
+        "minForms": "0"
     });
 })(jQuery);
