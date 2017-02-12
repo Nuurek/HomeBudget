@@ -27,10 +27,10 @@ def get_purchase_labels():
 
 def get_categories_widgets():
     return {
-        'nazwa': TextInput(attrs={
+        'name': TextInput(attrs={
             'class': 'form-control',
         }),
-        'czy_opcjonalny': CheckboxInput(attrs={
+        'is_optional': CheckboxInput(attrs={
             'class': '',
         }),
     }
@@ -38,8 +38,8 @@ def get_categories_widgets():
 
 def get_categories_labels():
     return {
-        'nazwa': "Nazwa",
-        'czy_opcjonalny': "Czy opcjonalne?",
+        'name': "Nazwa",
+        'is_optional': "Czy opcjonalne?",
     }
 
 
