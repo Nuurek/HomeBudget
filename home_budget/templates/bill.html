@@ -17,16 +17,16 @@
             {{ form.brand }}
         </div>
         <div class="form-group text-center">
-            {{ form.sklepy_id.label_tag }}
-            {{ form.sklepy_id }}
+            {{ form.shop.label_tag }}
+            {{ form.shop }}
             <script type="text/javascript">
-                var shops = JSON.parse('{{ shops | escapejs }}');
+                var brandsToShops = JSON.parse('{{ shops | escapejs }}');
             </script>
         </div>
         <div class="form-group text-center">
-            {{ form.czas_zakupu.label_tag }}
+            {{ form.time_of_purchase.label_tag }}
             <div id="bill-date" class="input-group date" data-provide="datepicker-inline">
-                {{ form.czas_zakupu }}
+                {{ form.time_of_purchase }}
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>

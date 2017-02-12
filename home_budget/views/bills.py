@@ -88,11 +88,11 @@ class BillDetailView(BillCreateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         bill = Receipt.objects.get(id=pk)
-        shop = Shop.objects.get(id=bill.sklepy_id.id)
-        brand = shop.adres
+        shop = Shop.objects.get(id=bill.shop_id)
+        brand = shop.address
         initial_bill_data = {}
-        initial_bill_data['brand'] = shop.sieci_sklepow_nazwa
-        initial_bill_data['sklepy_adres'] = shop.adres
+        initial_bill_data['brand'] = shop.brand
+        initial_bill_data['address'] = shop.address
 
         return super(BillDetailView, self).get(
             request, bill=bill, initial_bill_data=initial_bill_data,

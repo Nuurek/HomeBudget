@@ -35,7 +35,7 @@
 
     <div id="bills=list">
         <div class="panel list-group">
-            {% regroup object_list by czas_zakupu as days %}
+            {% regroup object_list by time_of_purchase as days %}
             {% for day in days %}
                 <a href="#" class="list-group-item list-group-item-info text-center display-1" data-toggle="collapse" data-target="#day-{{ day.grouper | slugify }}" data-parent="#bills-list">
                     <strong>{{ day.grouper }}</strong>
@@ -45,7 +45,7 @@
                         <a href="{% url 'bill_detail' bill.id %}" class="list-group-item">
                             <div class="row">
                                 <div class="col-md-11">
-                                    {{ bill.sklepy_id__sieci_sklepow_nazwa }}, {{ bill.sklepy_id__adres }}
+                                    {{ bill.shop__brand__name }}, {{ bill.shop__address }}
                                 </div>
                                 <div class="col-md-1">
                                     <strong>{{ bill.total | floatformat:2 }} zł</strong>

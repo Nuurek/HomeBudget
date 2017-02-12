@@ -14,7 +14,7 @@ class Shop(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.address
+        return self.brand.name + ', ' + self.address
 
 
 class Receipt(models.Model):

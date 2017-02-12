@@ -30,7 +30,7 @@ class BillForm(ModelForm):
         })
     )
 
-    sklepy_id = ModelChoiceField(
+    shop = ModelChoiceField(
         queryset=Shop.objects.all(),
         label="Sklep",
         label_suffix='',
@@ -39,7 +39,7 @@ class BillForm(ModelForm):
         })
     )
 
-    czas_zakupu = DateField(
+    time_of_purchase = DateField(
         input_formats=['%d.%m.%Y'],
         label="Data zakupu",
         label_suffix='',
