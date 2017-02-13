@@ -1,26 +1,27 @@
 function setUpBrandName() {
     var brandName = $('#id_name');
+    brandName.attr('readonly', '');
     var editButton = $('#brand-name-edit');
     var removeButton = $('#brand-delete-button');
     var confirmMessage = $('#brand-delete-confirm');
     var yesButton = $('#brand-delete-yes');
     var noButton = $('#brand-delete-no');
-    var icon = $(editButton.find('span'));
+    var editIcon = $(editButton.find('span'));
     var submitButton = $('#submit-button');
 
     editButton.click(function(){
         editButton.removeAttr('class').blur();
-        icon.removeAttr('class');
+        editIcon.removeAttr('class');
 
         if (brandName.attr('readonly')) {
             brandName.removeAttr('readonly');
             editButton.attr('class', 'btn btn-success');
-            icon.attr('class', 'glyphicon glyphicon-ok');
+            editIcon.attr('class', 'glyphicon glyphicon-ok');
             submitButton.attr('disabled', '');
         } else {
             brandName.attr('readonly', '');
             editButton.attr('class', 'btn btn-info');
-            icon.attr('class', 'glyphicon glyphicon-edit');
+            editIcon.attr('class', 'glyphicon glyphicon-edit');
             submitButton.removeAttr('disabled');
         }
     });
