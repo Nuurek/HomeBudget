@@ -3,7 +3,7 @@ from django.forms import (
     DateInput
 )
 from django.forms import (
-    formset_factory, inlineformset_factory, modelformset_factory
+    inlineformset_factory, modelformset_factory
 )
 from datetime import date
 

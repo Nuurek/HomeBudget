@@ -47,19 +47,12 @@ class BillCreateView(TemplateView, BillView):
                 purchase_for_deletion.delete()
             for purchase in purchases:
                 purchase.receipt = bill
-                try:
-                    purchase.save()
-                except IntegrityError as error:
-                    messages.error(
-                        request,
-                        "Błędne dane zakupu!"
-                    )
+                purchase.save()
 
             purchases = Purchase.objects.filter(receipt=bill)
 
             if len(purchases) > 0:
                 pk = bill.id
-                print("Bill again: ", bill)
                 return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
             else:
                 bill.delete()
