@@ -81,11 +81,11 @@ class BrandForm(ModelForm):
         fields = ("name",)
 
     name = CharField(
-        label="",
+        label="Nazwa",
         label_suffix='',
         widget=TextInput(attrs={
             'class': 'form-control input-lg text-center',
-            'readonly': '',
+            'readonly': False,
         })
     )
 

@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, CreateView
 from django.http import HttpResponseRedirect
 from django.db.models import Count
 from django.urls import reverse
@@ -10,10 +10,10 @@ from ..models import Brand, Shop
 from ..forms import BrandForm, ShopFormSet
 
 
-class BrandListView(ListView):
-    template_name = "brands.html"
-
+class BrandListView(CreateView):
     model = Brand
+    template_name = "brands.html"
+    form_class = BrandForm
 
     def get_queryset(self):
         queryset = Brand.objects.all().annotate(
@@ -21,17 +21,23 @@ class BrandListView(ListView):
         )
         return queryset
 
-    def post(self, request, *args, **kwargs):
-        brand_name = request.POST['brand-name']
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = self.get_queryset()
+        return super(BrandListView, self).get_context_data(**kwargs)
 
+    def post(self, request, *args, **kwargs):
         brand_form = BrandForm(request.POST)
+
         if brand_form.is_valid():
             brand_form.save()
+
+            brand_name = brand_form.cleaned_data['name']
 
             messages.success(
                 request,
                 "Sieć sklepów " + brand_name + " została stworzona."
             )
+
             return HttpResponseRedirect(reverse(
                 "brand",
                 kwargs={
