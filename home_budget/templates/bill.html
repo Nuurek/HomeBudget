@@ -37,17 +37,17 @@
     <div id="bill-records" class="form-group text-center">
         {{ purchase_formset.management_form }}
         <div id="record-labels" class="row">
-            <div class="col-md-5 form-group">
-                {{ purchase_formset.0.nazwa_produktu.label_tag }}
+            <div class="col-md-4 form-group">
+                {{ purchase_formset.0.name.label_tag }}
             </div>
             <div class="col-md-3 form-group">
-                {{ purchase_formset.0.kategorie_zakupu_id.label_tag }}
+                {{ purchase_formset.0.product_category.label_tag }}
             </div>
             <div class="col-md-2 form-group">
-                {{ purchase_formset.0.cena_jednostkowa.label_tag }}
+                {{ purchase_formset.0.unit_price.label_tag }}
             </div>
-            <div class="col-md-1 form-group">
-                {{ purchase_formset.0.ilosc_produktu.label_tag }}
+            <div class="col-md-2 form-group">
+                {{ purchase_formset.0.amount.label_tag }}
             </div>
         </div>
 
@@ -55,17 +55,17 @@
         {% for form in purchase_formset %}
             <div class="row">
                 {{form.id}}
-                <div class="col-md-5 form-group">
-                    {{form.nazwa_produktu}}
+                <div class="col-md-4 form-group">
+                    {{form.name}}
                 </div>
                 <div class="col-md-3 form-group">
-                    {{form.kategorie_zakupu_id}}
+                    {{form.product_category}}
                 </div>
                 <div class="col-md-2 form-group">
-                    {{form.cena_jednostkowa}}
+                    {{form.unit_price}}
                 </div>
-                <div class="col-md-1 form-group">
-                    {{form.ilosc_produktu}}
+                <div class="col-md-2 form-group">
+                    {{form.amount}}
                 </div>
                 <div class="col-md-1 form-group">
                     <button type="button" class="btn btn-warning remove-form">

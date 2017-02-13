@@ -4,24 +4,24 @@ from django.forms import (
 
 
 def get_purchase_widgets():
-    attrs = {
+    attributes = {
         'class': 'form-control',
         'required': 'required',
     }
     return {
-        'nazwa_produktu': TextInput(attrs=attrs),
-        'kategorie_zakupu_id': Select(attrs=attrs),
-        'cena_jednostkowa': NumberInput(attrs=attrs),
-        'ilosc_produktu': NumberInput(attrs=attrs),
+        'name': TextInput(attrs=attributes),
+        'product_category': Select(attrs=attributes),
+        'unit_price': NumberInput(attrs=attributes),
+        'amount': NumberInput(attrs=attributes),
     }
 
 
 def get_purchase_labels():
     return {
-        'nazwa_produktu': "Nazwa",
-        'kategorie_zakupu_id': "Kategoria",
-        'cena_jednostkowa': "Cena",
-        'ilosc_produktu': "Ilość",
+        'name': "Nazwa",
+        'product_category': "Kategoria",
+        'unit_price': "Cena",
+        'amount': "Ilość",
     }
 
 
