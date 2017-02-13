@@ -92,5 +92,4 @@ ENV/
 
 # Static working files
 *.map
-/all.json
 /shoppingdatabase

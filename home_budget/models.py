@@ -1,4 +1,5 @@
 from django.db import models
+from categories.models import ProductCategory
 
 
 class Brand(models.Model):
@@ -24,14 +25,6 @@ class Receipt(models.Model):
         name = self.time_of_purchase.strftime("%d/%m/%Y")
         name += ' - ' + str(self.shop)
         return name
-
-
-class ProductCategory(models.Model):
-    name = models.CharField(max_length=32, blank=False)
-    is_optional = models.BooleanField()
-
-    def __str__(self):
-        return self.name
 
 
 class Purchase(models.Model):
