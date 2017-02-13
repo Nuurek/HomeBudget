@@ -3,14 +3,13 @@ from django.forms import (
     DateInput
 )
 from django.forms import (
-    inlineformset_factory, modelformset_factory
+    inlineformset_factory
 )
 from datetime import date
 
-from .models import Receipt, Purchase, Shop, Brand, ProductCategory
+from .models import Receipt, Purchase, Shop, Brand
 from .widgets import (
     get_purchase_widgets, get_purchase_labels,
-    get_categories_widgets, get_categories_labels,
     get_shops_widgets,
 )
 
@@ -62,16 +61,6 @@ PurchaseFormSet = inlineformset_factory(
 class PurchaseRetrieveFormSet(PurchaseFormSet):
     extra = 0
     can_delete = True
-
-
-CategoryFormSet = modelformset_factory(
-    ProductCategory,
-    fields=("name", "is_optional",),
-    extra=0,
-    can_delete=True,
-    widgets=get_categories_widgets(),
-    labels=get_categories_labels(),
-)
 
 
 class BrandForm(ModelForm):

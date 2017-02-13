@@ -15,10 +15,10 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-10 col-md-offset-3">
                 <div class="col-md-4 form-group">
-                    {{ formset.0.nazwa.label_tag }}
+                    {{ formset.0.name.label_tag }}
                 </div>
                 <div class="col-md-2 form-group">
-                    {{ formset.0.czy_opcjonalny.label_tag }}
+                    {{ formset.0.is_optional.label_tag }}
                 </div>
             </div>
         </div>
@@ -57,12 +57,11 @@
     </div>
     <div class="form-group">
         <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Zapisz{% endblock %}">
-        </input>
     </div>
 </form>
 
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'home_budget/js/categories.js' %}"></script>
+    <script src="{% static 'categories/js/categories.js' %}"></script>
 {% endblock %}
