@@ -52,9 +52,19 @@ class BillCreateView(TemplateView, BillView):
             purchases = Purchase.objects.filter(receipt=bill)
 
             if len(purchases) > 0:
+                messages.success(
+                    request,
+                    "Paragon zapisany."
+                )
+
                 pk = bill.id
                 return HttpResponseRedirect(reverse('bill_detail', args=[pk]))
             else:
+                messages.error(
+                    request,
+                    "Paragon musi zawierać co najmniej jeden zakup."
+                )
+
                 bill.delete()
                 return self.render_context(bill_form, purchase_formset)
 

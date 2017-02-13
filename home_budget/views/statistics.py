@@ -83,8 +83,8 @@ class StatisticsView(TemplateView, DateRangeView):
 
     def _queryset_to_json_vis_group(self, queryset, group_id):
         vis_group = [{
-            "x": expense["czas_zakupu"].strftime("%Y-%m-%d"),
-            "y": expense["total"],
+            "x": expense["time_of_purchase"].strftime("%Y-%m-%d"),
+            "y": str(expense["total"]),
             "group": group_id,
         } for expense in queryset]
 
