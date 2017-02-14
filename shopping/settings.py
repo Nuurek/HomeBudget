@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     # other apps
+    'compressor',
     # project apps
     'home_budget',
     'brands',
@@ -126,8 +127,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
+# Django Compressor settings
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'static'),
 )
+STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+)
+STATIC_ROOT = os.path.join(BASE_DIR, '../static')
+COMPRESS_ENABLED = DEBUG
