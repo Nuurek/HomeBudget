@@ -1,10 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'receipt_base.html' %}
 
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/select2.min.css" %}">
+    {{ block.super }}
     <link rel="stylesheet" href="{% static "receipts/css/receipt.css" %}">
 {% endblock %}
 
@@ -90,7 +89,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    <script src="{% static 'js/select2.min.js' %}"></script>
+    {{ block.super }}
     <script src="{% static 'receipts/js/receipt.js' %}"></script>
 {% endblock %}
