@@ -13,7 +13,7 @@ function checkboxClick() {
 
 (function($){
     var formset = new Formset({
-        "formsetID": "categories-formset",
+        "formsetID": "brands-formset",
         "errorMessage": "W bazie musi istnieć co najmniej jedna kategoria.",
     });
 

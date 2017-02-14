@@ -8,7 +8,7 @@
     <div class="panel">
         <div class="row panel-heading">
             <div id="brand-form" class="form-group input-group-lg col-md-6 col-md-offset-3 has-success"> {% csrf_token %}
-                <strong>{{ brand_form }}<strong>
+                <strong>{{ brand_form }}</strong>
             </div>
         </div>
         <div class="row form-group">
@@ -20,9 +20,9 @@
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
                 <div hidden id="brand-delete-confirm">
-                    <strong>Czy na pewno chcesz usunąć tę sieć sklepów?<strong>
+                    <strong>Czy na pewno chcesz usunąć tę sieć sklepów?</strong>
                     <div class="modal-body">
-                        <button id="brand-delete-yes" form="shops-formset" type="submit" class="btn btn-success" formmethod="post" name="delete_brand" value="true" url="">
+                        <button id="brand-delete-yes" form="shops-formset" type="submit" class="btn btn-success" formmethod="post" name="delete_brand" value="true">
                             <span class="glyphicon glyphicon-ok"></span>
                         </button>
                         <button id="brand-delete-no" type="button" class="btn btn-danger" data-dismiss="modal">
@@ -59,8 +59,7 @@
             </button>
         </div>
         <div class="form-group col-md-8 col-md-offset-2">
-            <input id="submit-button" form="shops-formset" class="btn btn-lg btn-primary btn-block" type="submit"value="{% block submit-name %}Zapisz{% endblock %}">
-            </input>
+            <input id="submit-button" form="shops-formset" class="btn btn-lg btn-primary btn-block" type="submit" value="{% block submit-name %}Zapisz{% endblock %}">
         </div>
     </div>
 </form>
@@ -68,5 +67,5 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'home_budget/js/brand.js' %}"></script>
+    <script src="{% static 'brands/js/brand.js' %}"></script>
 {% endblock %}

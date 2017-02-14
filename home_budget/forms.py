@@ -10,7 +10,6 @@ from datetime import date
 from .models import Receipt, Purchase, Shop, Brand
 from .widgets import (
     get_purchase_widgets, get_purchase_labels,
-    get_shops_widgets,
 )
 
 
@@ -61,28 +60,3 @@ PurchaseFormSet = inlineformset_factory(
 class PurchaseRetrieveFormSet(PurchaseFormSet):
     extra = 0
     can_delete = True
-
-
-class BrandForm(ModelForm):
-
-    class Meta:
-        model = Brand
-        fields = ("name",)
-
-    name = CharField(
-        label="Nazwa",
-        label_suffix='',
-        widget=TextInput(attrs={
-            'class': 'form-control input-lg text-center',
-            'readonly': False,
-        })
-    )
-
-
-ShopFormSet = inlineformset_factory(
-    Brand, Shop,
-    exclude=(),
-    can_delete=True,
-    extra=0,
-    widgets=get_shops_widgets(),
-)

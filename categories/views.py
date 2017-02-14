@@ -31,11 +31,6 @@ class CategoryListView(TemplateView):
             'formset': formset
         }
 
-        for key, value in request.POST.items():
-            print(key, ": ", value)
-        for form in formset:
-            print(form)
-            print("Valid? ", form.is_valid())
         if formset.is_valid():
             try:
                 formset.save()
@@ -45,6 +40,6 @@ class CategoryListView(TemplateView):
                     'Jedna z kategorii posiada przypisane zakupy.'
                 )
                 return self.render_to_response(context)
-            return HttpResponseRedirect(reverse('categories'))
+            return HttpResponseRedirect(reverse('brands'))
         else:
             return self.render_to_response(context)

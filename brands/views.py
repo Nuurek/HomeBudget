@@ -6,8 +6,8 @@ from django.db import IntegrityError
 from django.contrib import messages
 
 
-from ..models import Brand, Shop
-from ..forms import BrandForm, ShopFormSet
+from .models import Brand, Shop
+from .forms import BrandForm, ShopFormSet
 
 
 class BrandListView(CreateView):
@@ -172,3 +172,6 @@ class BrandDetailView(TemplateView):
                 "brand_name": self.brand_name,
             }
         ))
+from django.shortcuts import render
+
+# Create your views here.

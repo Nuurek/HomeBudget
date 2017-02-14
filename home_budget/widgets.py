@@ -23,13 +23,3 @@ def get_purchase_labels():
         'unit_price': "Cena",
         'amount': "Ilość",
     }
-
-
-def get_shops_widgets():
-    return {
-        'address': TextInput(attrs={
-            'class': 'form-control',
-        }),
-        'id': HiddenInput(),
-        'brand': HiddenInput(),
-    }

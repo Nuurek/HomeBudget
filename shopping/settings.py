@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # other apps
     # project apps
     'home_budget',
+    'brands',
     'categories',
 ]
 
