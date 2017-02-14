@@ -2,21 +2,41 @@ from django.views.generic import TemplateView, ListView
 from django.db.models import F, Sum
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.db import IntegrityError
 from django.contrib import messages
-from datetime import datetime
+from collections import defaultdict
+import json
 
-from ..models import Receipt, Purchase, Shop
-from ..forms import BillForm, PurchaseFormSet
-from .common import DateRangeView, BillView
+from home_budget.views.common import DateRangeView
+from brands.models import Shop
+from .models import Receipt, Purchase
+from .forms import BillForm, PurchaseFormSet
 
 
-class BillCreateView(TemplateView, BillView):
+class ReceiptView(object):
 
-    template_name = "bill.html"
+    @staticmethod
+    def _get_shops():
+        shops = Shop.objects.all() \
+                        .values('brand', 'id', 'address') \
+                        .order_by('address')
+
+        brands_shops = defaultdict(list)
+        for shop in shops:
+            brand = shop['brand']
+            brands_shops[brand].append({
+                'id': shop['id'],
+                'address': shop['address'],
+            })
+
+        return json.dumps(brands_shops)
+
+
+class ReceiptCreateView(TemplateView, ReceiptView):
+
+    template_name = "receipt.html"
 
     def __init__(self, *args, **kwargs):
-        super(BillCreateView, self).__init__(*args, **kwargs)
+        super(ReceiptCreateView, self).__init__(*args, **kwargs)
         self.initial_number_of_rows = 1
 
     def get(self, request, bill=None, initial_bill_data=None, *args, **kwargs):
@@ -80,12 +100,12 @@ class BillCreateView(TemplateView, BillView):
         return self.render_to_response(context)
 
 
-class BillDetailView(BillCreateView):
+class ReceiptDetailView(ReceiptCreateView):
 
-    template_name = "bill_create.html"
+    template_name = "receipt_create.html"
 
     def __init__(self, *args, **kwargs):
-        super(BillDetailView, self).__init__(*args, **kwargs)
+        super(ReceiptDetailView, self).__init__(*args, **kwargs)
         self.initial_number_of_rows = 0
 
     def get(self, request, *args, **kwargs):
@@ -97,7 +117,7 @@ class BillDetailView(BillCreateView):
         initial_bill_data['brand'] = shop.brand
         initial_bill_data['address'] = shop.address
 
-        return super(BillDetailView, self).get(
+        return super(ReceiptDetailView, self).get(
             request, bill=bill, initial_bill_data=initial_bill_data,
             *args, **kwargs
         )
@@ -106,20 +126,20 @@ class BillDetailView(BillCreateView):
         pk = self.kwargs['pk']
         bill = Receipt.objects.get(id=pk)
 
-        return super(BillDetailView, self).post(
+        return super(ReceiptDetailView, self).post(
             request, bill=bill, *args, **kwargs
         )
 
 
-class BillListView(ListView, DateRangeView, BillView):
-    template_name = "bill_list.html"
+class ReceiptListView(ListView, DateRangeView, ReceiptView):
+    template_name = "receipt_list.html"
 
     paginate_by = 10
 
     is_form = True
 
     def get_context_data(self, **kwargs):
-        context = super(BillListView, self).get_context_data(**kwargs)
+        context = super(ReceiptListView, self).get_context_data(**kwargs)
 
         context['start_date'] = self.start_date.strftime("%d.%m.%Y")
         context['end_date'] = self.end_date.strftime("%d.%m.%Y")

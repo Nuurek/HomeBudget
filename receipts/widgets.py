@@ -1,6 +1,4 @@
-from django.forms import (
-    Select, TextInput, NumberInput, CheckboxInput, HiddenInput
-)
+from django.forms import Select, TextInput, NumberInput
 
 
 def get_purchase_widgets():

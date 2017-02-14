@@ -1,26 +1,4 @@
 from datetime import date, datetime, timedelta
-from collections import defaultdict
-import json
-
-from ..models import Shop
-
-
-class BillView(object):
-
-    def _get_shops(self):
-        shops = Shop.objects.all() \
-                        .values('brand', 'id', 'address') \
-                        .order_by('address')
-
-        brands_shops = defaultdict(list)
-        for shop in shops:
-            brand = shop['brand']
-            brands_shops[brand].append({
-                'id': shop['id'],
-                'address': shop['address'],
-            })
-
-        return json.dumps(brands_shops)
 
 
 class DateRangeView(object):

@@ -1,5 +1,7 @@
 from django.contrib import admin
-from home_budget.models import Brand, Shop, Receipt, Purchase, ProductCategory
+from brands.models import Brand, Shop
+from categories.models import ProductCategory
+from receipts.models import Receipt, Purchase
 
 
 admin.site.register(Brand)

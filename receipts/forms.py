@@ -1,13 +1,9 @@
-from django.forms import (
-    ModelForm, ModelChoiceField, DateField, Select, TextInput, CharField,
-    DateInput
-)
-from django.forms import (
-    inlineformset_factory
-)
+from django.forms import ModelForm, ModelChoiceField, inlineformset_factory
+from django.forms.fields import DateField
+from django.forms.widgets import Select, DateInput
 from datetime import date
-
-from .models import Receipt, Purchase, Shop, Brand
+from brands.models import Brand, Shop
+from .models import Receipt, Purchase
 from .widgets import (
     get_purchase_widgets, get_purchase_labels,
 )

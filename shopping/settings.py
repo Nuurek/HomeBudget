@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'home_budget',
     'brands',
     'categories',
+    'receipts',
 ]
 
 MIDDLEWARE = [

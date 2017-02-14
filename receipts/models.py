@@ -1,5 +1,5 @@
 from django.db import models
-from brands.models import Brand, Shop
+from brands.models import Shop
 from categories.models import ProductCategory
 
 

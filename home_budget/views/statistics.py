@@ -3,7 +3,7 @@ from django.db.models import F, Sum, Count
 from decimal import *
 import json
 
-from ..models import Receipt
+from receipts.models import Receipt
 from .common import DateRangeView
 
 
